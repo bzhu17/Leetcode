@@ -1,0 +1,36 @@
+//大根堆
+priority_queue<int> p;
+
+//小根堆
+priority_queue<int, vector<int>, greater<int>> p;
+
+//struct, class 大根堆
+class node {
+public:
+	int x;
+	node(int a = 0) :x(a){}
+};
+bool operator <(const Node&a, const Node&b)
+{
+  return a.x<b.x;
+}
+int main()
+{
+  priority_queue<node> p;
+}
+
+//struct, class 小根堆
+public:
+	int x;
+	node(int a = 0) :x(a){}
+};
+struct cmp{
+  bool operator ()(const Node&a, const Node&b)
+  {
+    return a.x>b.x;
+  }
+};
+int main()
+{
+  priority_queue<node, vector<node>, cmp> p;
+}
