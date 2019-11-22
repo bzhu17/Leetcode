@@ -1,0 +1,16 @@
+//two functions, one is put(), which has key and value, the other is get(), which uses key, 
+//and when there has been in it will be deleted and re-write, 
+//the key with get() will also arrive the begin of structure and when size is larger than capacity, 
+//it will delete the least key which is no active.
+//use list and unordered_map, put the iterator of list in map besides of key to get o(1).
+list<pair(key, value)> l;
+unordered_map<int,list<pair(key, value)>::iterator> m;
+//map just for select so everytime l change the value to begin m does not need to change
+auto i=m.find(key);
+l.splice(l.begin(),l,i->first);
+//the last value's iterator
+l.rbegin();
+l.push_front();
+l.push_back();
+l.pop_frony();
+l.pop_back();
