@@ -1,0 +1,56 @@
+//二维vector (m,n)
+vector<vector<int>> a(m, vector<int>(n,0));
+
+//第一类，查找和目标值完全相等的数
+int find(vector<int>& nums, int target)
+{
+  int left = 0;
+  int right = nums.size();
+  int mid = 0;
+  while(left<right)
+  {
+    mid = (left+right)/2;
+    if(nums[mid] == target)
+      return nums[mid];
+    else if(nums[mid] < target)
+      left = mid + 1;
+    else
+      right = mid;
+  }
+  return -1;
+}
+
+//第二类： 查找第一个不小于目标值的数，可变形为查找最后一个小于目标值的数
+//去掉 == 判断即可， [2, 4, 5, 6, 9] 中查找3，返回4的位置， [0, 1, 1, 1, 1] 中查找1，返回第一个数字1的位置
+int find(vector<int>& nums, int target)
+{
+  int left = 0;
+  int right = nums.size();
+  int mid = 0;
+  while(left<right)
+  {
+    mid = (left+right)/2;
+    if(nums[mid] < target)
+      left = mid + 1;
+    else
+      right = mid;
+  }
+  return nums[right];
+}
+//第三类： 查找第一个大于目标值的数，可变形为查找最后一个不大于目标值的数
+// [2, 4, 5, 6, 9] 中查找3，返回数字4的位置，[0, 1, 1, 1, 1] 中查找数字1，就会返回坐标5，最后一个1
+int find(vector<int>& nums, int target)
+{
+  int left = 0;
+  int right = nums.size();
+  int mid = 0;
+  while(left<right)
+  {
+    mid = (left+right)/2;
+    if(nums[mid] <= target)
+      left = mid + 1;
+    else
+      right = mid;
+  }
+  return nums[right];
+}
