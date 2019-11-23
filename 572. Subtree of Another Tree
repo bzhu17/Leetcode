@@ -1,0 +1,33 @@
+//dfs tree
+class Solution {
+public:
+    bool isSameTree(TreeNode *p, TreeNode *q) {
+      if(!p && !q)
+        return true;
+      if(!p || !q || p->value != q->value)
+        return false;
+      return isSameTree(p->left,q->left) && isSameTree(p->right, q->right);
+    }
+};
+
+//use twice dsf, the first is the first tree, the second is whether the same.
+class Solution {
+public:
+    bool isSubtree(TreeNode* s, TreeNode* t) {
+        if(!s && !t)
+            return true;
+        else if(!s)
+            return false;
+        if(isSame(s,t))
+            return true;
+        return isSubtree(s->left, t) || isSubtree(s->right, t);
+    }
+    
+    bool isSame(TreeNode* s, TreeNode* t){
+        if(!s && !t)
+            return true;
+        if(!s || !t || s->val != t->val)
+            return false;
+        return isSame(s->left, t->left) && isSame(s->right, t->right);
+    }
+};
