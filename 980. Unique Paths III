@@ -1,0 +1,38 @@
+//DFS in maze with all pairs
+//n represents the steps
+class Solution {
+public:    
+    int uniquePathsIII(vector<vector<int>>& grid) {
+        int s1=-1;
+        int s2=-1;
+        int n=1;
+        for(auto i=0;i<grid.size();i++)
+            for(auto j=0;j<grid[0].size();j++)
+            {
+                if(grid[i][j]==0)
+                    ++n;
+                else if(grid[i][j]==1)
+                {
+                    s1=i;
+                    s2=j;
+                }
+            }
+        return dfs(grid,s1,s2,n);
+    }
+private:
+//recursive first set the point as visited and after recursive reset it as unvisited
+    int dfs(vector<vector<int>>& grid, int i, int j, int n)
+    {
+        if(i<0||j<0||i==grid.size()||j==grid[0].size()||grid[i][j]==-1)
+            return 0;
+        if(grid[i][j]==2)
+            return n==0;
+        grid[i][j]=-1;
+        int num=dfs(grid,i,j-1,n-1)+
+                dfs(grid,i-1,j,n-1)+
+                dfs(grid,i,j+1,n-1)+
+                dfs(grid,i+1,j,n-1);
+        grid[i][j]=0;
+        return num;
+    }
+};
