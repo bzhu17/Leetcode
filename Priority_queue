@@ -1,3 +1,10 @@
+//lambda function, first order with int from pair smallest is top and then with string charactor largest is top
+//priority_queue only can guarantee the top is smallest or biggest and it can't guarantee the other member is sorted!!
+auto cmp = [](pair<string,int>&a, pair<string,int>&b){
+	return a.second>b.second || (a.second==b.second&&a.first<b.first);// < > is reverse with sort
+};
+priority_queue<pair<string,int>, vector<pair<string,int>>,decltype(cmp)> p(cmp);
+
 //大根堆
 priority_queue<int> p;
 
