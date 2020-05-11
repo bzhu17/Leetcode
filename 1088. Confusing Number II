@@ -1,0 +1,50 @@
+//Description: rotate digits by 180 degrees to make them different, only 0,1,6,8,9 rotate are valid
+// Determine the length of the number and then from the highest digital to lowest digital with BFS, 
+// each level with loop of trying {0,1,6,8,9} and determine reverse of the number not equal to itself
+// just like 0,1,6,8,9 -> 10,11,16,18,19,61,66,68...... -> 100,101,106......
+class Solution {
+public:
+    long long reverse(long long n)
+    {
+        long long rst=0;
+        while(n>0)
+        {
+            long long tmp=n%10;
+            n/=10;
+            tmp=(tmp==6)?9:((tmp==9)?6:tmp);
+            rst=rst*10+tmp;
+        }
+        return rst;
+    }
+    int confusingNumberII(int N) {
+        long long t=N,length=0,rst=0;
+        while(t>0)
+        {
+            t/=10;
+            ++length;
+        }
+        vector<int> v={0,1,6,8,9};
+        queue<long long> q;
+        q.push(0);
+        long long number=0,i=0;
+        while(!q.empty())
+        {
+            for(long long k=q.size();k>0;--k)
+            {
+                long long tmp=q.front();q.pop();
+                for(long long j=0;j<5;++j)
+                {
+                    if(i==0&&j==0) continue;
+                    number=10*tmp+v[j];
+                    if(number<=N)
+                    {
+                        q.push(number);
+                        if(reverse(number)!=number) ++rst;
+                    }
+                }
+            }
+            ++i;
+        }
+        return rst;
+    }
+};
