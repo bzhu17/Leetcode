@@ -1,0 +1,31 @@
+//Description: Given a non-negative integer num represented as a string, 
+// remove k digits from the number so that the new number is the smallest possible.  
+// "1432219"->"1219"(3), "10200"->"200"(1), "10"->"0"(2)
+ 
+//Use Max Stack(every push number will bigger than the top of the stack) to remove the bigger number in low digital,
+// and maybe will push more digitals so we need to resize the rst.
+
+//With this kind of remove digitals that we want to remove the bigger number we could consider Max Stack
+
+class Solution {
+public:
+    string removeKdigits(string num, int k) {
+        string rst;
+        int n=num.size(),m=n-k;
+        for(auto a:num)
+        {
+            while(k&&rst.size()&&a<rst.back())
+            {
+                rst.pop_back();
+                --k;
+            }
+            rst.push_back(a);
+        }
+        rst.resize(m);
+        while(!rst.empty()&&rst[0]=='0')
+        {
+            rst.erase(rst.begin());
+        }
+        return rst.empty()?"0":rst;
+    }
+};
