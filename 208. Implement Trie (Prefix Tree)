@@ -1,0 +1,67 @@
+//Description:Implement Trie,(1)root does not contain charactor,other node only contain one charactor,
+// (2)from root to one node, charactors on the path make up the word, (3) every node with different string
+
+// Every node contains an 26 array, the index represents the child charactor, and one class member isWord represent
+// whether from root to the node is a word.
+
+class TrieNode{
+public:
+    TrieNode *child[26];
+    bool isWord;
+    TrieNode():isWord(false){
+        for(auto&a:child) a=nullptr;
+    }
+};
+class Trie {
+public:
+    /** Initialize your data structure here. */
+    Trie() {
+        root=new TrieNode;
+    }
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        TrieNode *t=root;
+        for(auto c:word)
+        {
+            int i=c-'a';
+            if(!t->child[i]) t->child[i]=new TrieNode();
+            t=t->child[i];
+        }
+        t->isWord=true;
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        TrieNode *t=root;
+        for(auto c:word)
+        {
+            int i=c-'a';
+            if(!t->child[i]) return false;
+            t=t->child[i];
+        }
+        return t->isWord;
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        TrieNode *t=root;
+        for(auto c:prefix)
+        {
+            int i=c-'a';
+            if(!t->child[i]) return false;
+            t=t->child[i];
+        }
+        return true;
+    }
+private:
+    TrieNode *root;
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie* obj = new Trie();
+ * obj->insert(word);
+ * bool param_2 = obj->search(word);
+ * bool param_3 = obj->startsWith(prefix);
+ */
