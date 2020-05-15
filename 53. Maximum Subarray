@@ -1,0 +1,18 @@
+//Description: Given an integer array nums, find the contiguous subarray (containing at least one number) 
+// which has the largest sum and return its sum.
+
+//Two variables, one is result initial with INT_MIN, and the other is cur initial with 0, loop the array and
+// cur=max(cur,cur+a) to get the local optimal solution and then max(cur,rst) to get the global optimal solution
+
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int rst=INT_MIN,cur=0;
+        for(auto a:nums)
+        {
+            cur=max(a,cur+a);
+            rst=max(rst,cur);
+        }
+        return rst;
+    }
+};
