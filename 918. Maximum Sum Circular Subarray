@@ -1,0 +1,22 @@
+//Description:maximum possible sum of a non-empty subarray with circle, just like (53) Maximum Subarray
+
+//If the subarray just between the begin and the end it is the same as question 53, but if the subarray 
+// cross the end, rst=sum-minsum, and we should consider this two kind of situation. So calculate the both
+// local optimal solution of min and max and global optimal solution of min and max, and also consider the 
+// corner case of all numbers in array are negative.
+
+class Solution {
+public:
+    int maxSubarraySumCircular(vector<int>& A) {
+        int sum=0,mn=INT_MAX,mx=INT_MIN,curMax=0,curMin=0;
+        for(auto a:A)
+        {
+            curMax=max(a,curMax+a);
+            mx=max(mx,curMax);
+            curMin=min(a,curMin+a);
+            mn=min(mn,curMin);
+            sum+=a;
+        }
+        return (mx<0)?mx:max(mx,sum-mn);
+    }
+};
