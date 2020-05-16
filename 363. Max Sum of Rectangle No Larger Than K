@@ -1,0 +1,43 @@
+//Description: Given a non-empty 2D matrix matrix and an integer k, 
+// find the max sum of a rectangle in the matrix such that its sum is no larger than k. [[1,0,1],[0,-2,3]], 2 -> 2
+
+//At first we need to consider how to find rectangle from 2D matrix, and one method is from one column to the next column,
+// just like  1 -> 1 -> 1 -> 1 4...., and this method we need to begin from the first column, and from the first row to the
+//                 2    2    2
+//                      3    3
+// last row and then go to the second column, and one by one to the last column, and then go to start at the second column, and 
+// do it again, the reason is that the column we start each time will first become the rectangle one digital, and with the next
+// column 2 digits, 3 digits, so we divide the 2D matrix to column by column, but with this method, we do not consider the rectangle
+// between the first and the last row, just like 2 itself, so we use set to store the sum of rectangles we have, and then we use
+// lower_bound to get the first number not smaller than (cur-k), because cur-? represents the sum of the area between the first row
+// and the last row, so if we find the first number not smaller than (cur-k), the rst must be the bigger one of the sequence in set
+
+class Solution {
+public:
+    int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
+        if(matrix.empty()||matrix[0].empty()) return 0;
+        int m=matrix.size(),n=matrix[0].size(),rst=INT_MIN;
+        for(int i=0;i<n;++i)
+        {
+            vector<int> sum(m);
+            for(int j=i;j<n;++j)
+            {
+                for(int l=0;l<m;++l)
+                {
+                    sum[l]+=matrix[l][j];
+                }
+                set<int> s{{0}};
+                int cur=0;
+                for(auto a:sum)
+                {
+                    cur+=a;
+                    auto au=s.lower_bound(cur-k);
+                    if(au!=s.end())
+                        rst=max(rst,cur-*au);
+                    s.insert(cur);
+                }
+            }
+        }
+        return rst;
+    }
+};
