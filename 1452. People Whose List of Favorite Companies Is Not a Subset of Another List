@@ -1,0 +1,65 @@
+//Description: give a 2D matrix, the row represents companies that one person likes, and we need to find 
+// the row which is not a subset of others and return the index of them
+// [["leetcode","google","facebook"],["google","microsoft"],["google","facebook"],["google"],["amazon"]]->[0,1,4] 
+// [["leetcode","google","facebook"],["leetcode","amazon"],["facebook","google"]]->[0,1]
+// [["leetcode"],["google"],["facebook"],["amazon"]]->[0,1,2,3]
+
+//It is easy to think about comparing the vector one by one, but time complexity will be O(n*n), and I try
+// to use set each row, but create and insert will take too much time. At first I consider use sort and to 
+// compare one by one, but in some case like [1,2,3] and [1,3], they can not match one by one, and when the
+// number does not equal, you can compare which is bigger, if the subset is bigger, you can move next number 
+// of parents, or it is not a subset
+
+class Solution {
+public:
+    bool isSub(vector<int>& v1,vector<int>& v2)
+    {
+        int m1=v1.size(),m2=v2.size(),cur1=0,cur2=0;
+        while(cur1<m1&&cur2<m2)
+        {
+            if(v1[cur1]==v2[cur2])
+            {
+                ++cur1;++cur2;
+            }
+            else if(v2[cur2]<v1[cur1])
+                ++cur2;
+            else
+                return false;
+        }
+        return cur1==m1;
+    }
+    vector<int> peopleIndexes(vector<vector<string>>& favoriteCompanies) {
+        int n=favoriteCompanies.size();
+        unordered_map<string,int> m;
+        vector<vector<int>> v(n,vector<int>());
+        for(int i=0;i<n;++i)
+        {
+            for(int j=0;j<favoriteCompanies[i].size();++j)
+            {
+                if(!m.count(favoriteCompanies[i][j])) 
+                {
+                    int num=m.size();
+                    m[favoriteCompanies[i][j]]=num;
+                }
+                v[i].push_back(m[favoriteCompanies[i][j]]);
+            }
+            sort(v[i].begin(),v[i].end());
+        }
+        vector<int> rst;
+        for(int i=0;i<n;++i)
+        {
+            bool b=false;
+            for(int j=0;j<n;++j)
+            {
+                if(i==j) continue;
+                if(isSub(v[i],v[j]))
+                {
+                    b=true;
+                    break;
+                }
+            }
+            if(!b) rst.push_back(i);
+        }
+        return rst;
+    }
+};
