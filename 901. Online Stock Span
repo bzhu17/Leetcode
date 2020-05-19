@@ -1,0 +1,35 @@
+//Description: give an array and find the previous number which is less than or equal 
+// [100, 80, 60, 70, 60, 75, 85]->[1, 1, 1, 2, 1, 4, 6]
+
+// At first I think to compare the current number with previous number with a vector 
+// contains the number that previous number less than or equal, and than compare again
+
+// But we can use a stack, which contain a pair, and the current number compared to the 
+// top of the stack, the stack contains the quantity of the diffrent number, use a loop
+// to compare untill the one bigger than the current number
+
+class StockSpanner {
+public:
+    StockSpanner() {
+        s=stack<pair<int,int>>();
+    }
+    
+    int next(int price) {
+        int num=1;
+        while(!s.empty()&&s.top().first<=price)
+        {
+            num+=s.top().second;
+            s.pop();
+        }
+        s.push({price,num});
+        return num;
+    }
+private:
+    stack<pair<int,int>> s;
+};
+
+/**
+ * Your StockSpanner object will be instantiated and called as such:
+ * StockSpanner* obj = new StockSpanner();
+ * int param_1 = obj->next(price);
+ */
