@@ -1,0 +1,75 @@
+//Description:giving an array which is the order of pre-order traversal, and build the tree return the root
+
+// We can use stack to store the node that is the ancestor of the current node, and if the value in the array
+// is smaller than the current node, just new a left child and if not, set the current node as the stack top 
+// because the top equals to the current node, and pop it, if the next top node value is smaller than value in
+// the array, do it again untill the top value is bigger than the value in the array. And it is a track that put
+// the current node into the stack, it can avoid the stack is empty, and judge the stack is empty and the top value
+// is smaller than the value is also smart.
+
+// It can also use BST to build the tree, because the preorder traversal is the same order of the BST
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        if(preorder.empty()) return nullptr;
+        TreeNode* rst=new TreeNode(preorder[0]),*cur=rst;
+        stack<TreeNode*> s{{rst}};
+        for(int i=1;i<preorder.size();++i)
+        {
+            if(preorder[i]<cur->val)
+            {
+                cur->left=new TreeNode(preorder[i]);
+                cur=cur->left;
+                s.push(cur);
+            }
+            else
+            {
+                cur=s.top();
+                s.pop();
+                while(!s.empty()&&s.top()->val<preorder[i])
+                {
+                    cur=s.top();
+                    s.pop();
+                }
+                cur->right=new TreeNode(preorder[i]);
+                cur=cur->right;
+                s.push(cur);
+            }
+        }
+        return rst;
+    }
+};
+
+class Solution {
+public:
+    TreeNode* bfs(TreeNode* root,int val)
+    {
+        if(!root)
+        {
+            root=new TreeNode(val);
+            return root;
+        }
+        if(root->val>val) root->left=bfs(root->left,val);
+        if(root->val<val) root->right=bfs(root->right,val);
+        return root;
+    }
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        if(preorder.empty()) return nullptr;
+        TreeNode* root=new TreeNode(preorder[0]);
+        for(int i=1;i<preorder.size();++i)
+        {
+            root=bfs(root,preorder[i]);
+        }
+        return root;
+    }
+};
