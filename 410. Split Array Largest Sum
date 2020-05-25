@@ -1,0 +1,50 @@
+//Description: given an array and split it to minimize the largest sum among these m subarrays
+// [7,2,5,10,8],2->18
+
+// We can use a 2D DP, dp[i][j] means the smallest sum in the first jth in array with i subarrays,
+// and we need three level loops, the first is i, the second is j, the third is k, i-1<=k<j which 
+// means we set i-1 subarrays in the kth, dp[i-1][k] is known, and we just need to compare dp[i-1][k]
+// and the sum of array[k+1] to array[j], which is bigger, use the third loop to compare one by one
+
+// The best solution is using Binary Search, but the Binary Search first need a range, and if the size 
+// of array equals to m, it means the result is the biggest number in array, and the result must equal 
+// or bigger than it, and if m is 1, the sum of the array is the biggest result, so we find the range,
+// and the Binary Search must be in ascendant, but in the method, we use the range to judge if the number
+// is ok, if we can split the array to these number subarrays, we can try smaller number, and if not, we 
+// can try bigger one
+
+class Solution {
+public:
+    bool split(vector<int>& nums,long mid,int m)
+    {
+        long cur=0,k=1;
+        for(auto a:nums)
+        {
+            cur+=a;
+            if(cur>mid)
+            {
+                cur=a;
+                if(++k>m) return false;
+            }
+        }
+        return true;
+    }
+    int splitArray(vector<int>& nums, int m) {
+        long mx=0,sum=0;
+        for(auto a:nums)
+        {
+            mx=max(mx,(long)a);
+            sum+=a;
+        }
+        long left=mx,right=sum;
+        while(left<right)
+        {
+            long mid=left+(right-left)/2;
+            if(split(nums,mid,m)) 
+                right=mid;
+            else 
+                left=mid+1;
+        }
+        return left;
+    }
+};
