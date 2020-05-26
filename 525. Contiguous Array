@@ -1,0 +1,26 @@
+//Description: Given a binary array, find the maximum length of a contiguous subarray with equal number of 0 and 1.
+
+// We can use the sum of the contiguous array, if array is 1, sum+1, if array is 0, sum-1, and using a unordered_map
+// to store the sum of the index, when we loop the array and could count the sum in the unordered_map, it means the sum of
+// between the i and the index is 0, the number of 1 equals to the number of 0. And we need to initialize the unordered_map
+// with {0,-1}, because if the sum is 0, the result is index+1.
+
+class Solution {
+public:
+    int findMaxLength(vector<int>& nums) {
+        unordered_map<int,int> m;
+        m[0]=-1;
+        int sum=0,rst=0;
+        for(int i=0;i<nums.size();++i)
+        {
+            sum+=(nums[i]==1)?1:-1;
+            if(m.count(sum))
+            {
+                rst=max(rst,i-m[sum]);
+            }
+            else
+                m[sum]=i;
+        }
+        return rst;
+    }
+};
