@@ -1,0 +1,46 @@
+//Description: calculate the area of the given rectangle, they may overlap, the 2D vector
+// gives the left bottom xy and the top right xy
+
+// We can along the x-axis to calculate each range in the same x value, and it may have 
+// many ranges in one x, so we need to add them together. The trick is we can set a pair 
+// pair<a,b>, a is the y value of the starting and the end of the rectangle, set the starting
+// b as 1, and the end b as -1, so if we sum it, when the sum is 0, it means we get a range, 
+// and when we loop the pair, we need a map to store them and sort them, but one rectangle has
+// left and right, and if we just push all number of one x value into the map, when we calculate 
+// the next near rectangle, we will get more range(the previous rectangle), so we could when left 
+// y-axis pushed, beginging sets 1, end sets -1, and when right y-axis pushed, reverse them, 
+// beginging sets -1, end sets 1, so they will offset when we get sum in pair.
+
+class Solution {
+public:
+    int rectangleArea(vector<vector<int>>& rectangles) {
+        map<int,vector<pair<int,int>>> xaxis;
+        map<int,int> yaxis;
+        long rst=0,pre_x=0,height=0;
+        for(auto &a:rectangles)
+        {
+            xaxis[a[0]].push_back({a[1],1});
+            xaxis[a[0]].push_back({a[3],-1});
+            xaxis[a[2]].push_back({a[1],-1});
+            xaxis[a[2]].push_back({a[3],1});
+        }
+        for(auto &a:xaxis)
+        {
+            rst=(rst+(a.first-pre_x)*height)%(1000000000+7);
+            for(auto &b:a.second)
+            {
+                yaxis[b.first]+=b.second;
+            }
+            long cnt=0,start=0;
+            height=0;
+            for(auto &b:yaxis)
+            {
+                if(cnt==0) start=b.first;
+                cnt+=b.second;
+                if(cnt==0) height+=b.first-start;
+            }
+            pre_x=a.first;
+        }
+        return rst;
+    }
+};
