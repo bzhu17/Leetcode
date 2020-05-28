@@ -1,0 +1,73 @@
+//Description: giving a number represents the number of people and an 2D vector represents
+// people who dislike each other, and divide all people to two groups which people who dislike
+// should divide to different groups
+
+// We can use a 2D vector to reprents the people that one dilikes, so when we consider the person,
+// we could just loop these dislike people, and we use a vector to show if the people has been grouped,
+// if it has been, just compare the group id, if it is not, just give them different color of current
+// people, and continue, so it is a good idea to use recursive. And with recursive, we could deal all 
+// related people, just like if we deal 1st, and 2nd, 3rd both dislike him, when we loop in vector find 
+// 2nd dislike 1st, we could recursive to 2nd and continue, after dealing, back to 1st and then go to 
+// recursive 3rd, it could help with related dislike occur after some unrelated relation.
+
+// Recursive is the same as using BFS with a queue.
+
+// It can also use Union Find, the same point in same set. Find root and merge
+
+class Solution {
+public:
+    bool help(vector<vector<int>>& groups,int cur,int color,vector<int>& colors)
+    {
+        colors[cur]=color;
+        for(int i=1;i<groups[cur].size();++i)
+        {
+            if(groups[cur][i]==1)
+            {
+                if(color==colors[i]) return false;
+                if(colors[i]==0&&!help(groups,i,-color,colors)) return false;
+            }
+        }
+        return true;
+    }
+    bool possibleBipartition(int N, vector<vector<int>>& dislikes) {
+        vector<vector<int>> groups(N+1,vector<int>(N+1));
+        for(auto a:dislikes)
+        {
+            groups[a[0]][a[1]]=1;
+            groups[a[1]][a[0]]=1;
+        }
+        vector<int> colors(N+1);
+        for(int i=1;i<N+1;++i)
+        {
+            if(colors[i]==0&&!help(groups,i,1,colors)) return false;
+        }
+        return true;
+    }
+};
+
+class Solution {
+public:
+    bool possibleBipartition(int N, vector<vector<int>>& dislikes) {
+        unordered_map<int, vector<int>> g;
+        for (auto dislike : dislikes) {
+            g[dislike[0]].push_back(dislike[1]);
+            g[dislike[1]].push_back(dislike[0]);
+        }
+        vector<int> root(N + 1);
+        for (int i = 1; i <= N; ++i) root[i] = i;
+        for (int i = 1; i <= N; ++i) {
+            if (!g.count(i)) continue;
+            int x = find(root, i), y = find(root, g[i][0]);
+            if (x == y) return false;
+            for (int j = 1; j < g[i].size(); ++j) {
+                int parent = find(root, g[i][j]);
+                if (x == parent) return false;
+                root[parent] = y;
+            }
+        }
+        return true;
+    }
+    int find(vector<int>& root, int i) {
+        return root[i] == i ? i : find(root, root[i]);
+    }
+};
