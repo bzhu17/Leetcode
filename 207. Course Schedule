@@ -1,0 +1,33 @@
+//Description: [1,0] means if you want take 1 class you need to complete 1 class first
+
+// Topological Sorting to find if there is no circle, 2D vector means A->B, and a vector
+// store the in of one node, use bfs to find if all node has 0 in, or it has circles
+
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<vector<int>> graphs(numCourses,vector<int>());
+        vector<int> in(numCourses);
+        for(auto a:prerequisites)
+        {
+            graphs[a[1]].push_back(a[0]);
+            ++in[a[0]];
+        }
+        queue<int> q;
+        for(int i=0;i<numCourses;++i)
+        {
+            if(in[i]==0) q.push(i);
+        }
+        int cnt=0;
+        while(!q.empty())
+        {
+            int tmp=q.front();q.pop();++cnt;
+            for(auto a:graphs[tmp])
+            {
+                if(--in[a]==0) q.push(a);
+            }
+        }
+        if(cnt!=numCourses) return false;
+        return true;
+    }
+};
