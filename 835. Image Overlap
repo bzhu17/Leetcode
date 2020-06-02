@@ -1,0 +1,57 @@
+//Description: square matrices with 0 or 1, slide one matric to get max overlap 1
+
+// The trick is using a mix string of x-change "-" y change as the key of unordered_map
+
+// Because in this question, matric is small so we can do with a four level loop brute 
+// force, using a 2D vector, one stores x change and the other stores y change
+
+class Solution {
+public:
+    int largestOverlap(vector<vector<int>>& A, vector<vector<int>>& B) {
+        int n = A.size(), rst = 0;
+        vector<pair<int, int>> vA, vB;
+        unordered_map<string,int> m;
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < n; ++j)
+            {
+                if (A[i][j]) vA.push_back({ i,j });
+                if (B[i][j]) vB.push_back({ i,j });
+            }
+        for(auto a:vA)
+        {
+            for(auto b:vB)
+            {
+                ++m[to_string(b.first-a.first)+"-"+to_string(b.second-a.second)];
+            }
+        }
+        for(auto a:m)
+        {
+            rst=max(rst,a.second);
+        }
+        return rst;
+    }
+};
+
+class Solution {
+public:
+    int largestOverlap(vector<vector<int>>& A, vector<vector<int>>& B) {
+        int res = 0, n = A.size();
+        vector<vector<int>> count(2*n, vector<int>(2*n, 0));
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (A[i][j] == 0)
+                    continue;
+                for (int k = 0; k < n; k++) {
+                    for (int l = 0; l < n; l++) {
+                        if (B[k][l] == 1) 
+                            res = max(res, ++count[k-i+n][l-j+n]);
+                    }
+                }
+            }           
+        }
+
+        
+        return res;
+    }
+};
