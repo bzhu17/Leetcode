@@ -1,0 +1,51 @@
+//Description: Given a positive integer n, return the number of all possible attendance records with length n, 
+// which will be regarded as rewardable. Attendance has 3 methods A(absent),L(late),P(present), 
+// A record is regarded as rewardable if it doesn't contain more than one 'A' (absent) or more than two continuous 'L' (late).
+
+// The question can be divide into two small question, not more than one 'A' and not more than two continuous 'L'
+// we can use dp0 which never A appeared from 0 to i and dp1 which A appeared once from 0 to i.
+// for() {dp0[i]=dp0[i-1]*2(appear L or P);dp1[i]=dp1[i-1]*2+dp0[i-1]*1;}
+// we can use dp3 which ends with 0 L from 0 to i, dp4 which ends with 1 L from 0 to i and dp5 which ends with 2 L from 0 to i
+// for() {dp3[i]=dp3[i-1]*2+dp4[i-1]*2+dp5[i-1]*2;dp4[i]=dp3[i-1]*1;dp5[i]=dp4[i-1]*1;}
+
+// Now, how to combine this two question?
+// We can use 6 variables
+// dp00:from 0 to i, never A appeared, ends with 0 L
+// dp01:from 0 to i, never A appeared, ends with 1 L
+// dp02:from 0 to i, never A appeared, ends with 2 L
+// dp10:from 0 to i, A appeared once, ends with 0 L
+// dp11:from 0 to i, A appeared once, ends with 1 L
+// dp12:from 0 to i, A appeared once, ends with 2 L
+
+// for()
+//{
+//  dp00[i]=dp00[i-1]*1+dp01[i-1]*1+dp02[i-2]*1;
+//  dp01[i]=dp00[i-1]*1;
+//  dp02[i]=dp01[i-1]*1;
+//  dp10[i]=dp00[i-1]*1+dp01[i-1]*1+dp02[i-1]*1+dp10[i-1]*1+dp11[i-1]*1+dp12[i-1]*1;
+//  dp11[i]=dp10[i-1]*1;
+//  dp12[i]=dp11[i-1]*1;
+//}
+
+class Solution {
+public:
+    int checkRecord(int n) {
+        long dp00=1,dp01=0,dp02=0,dp10=0,dp11=0,dp12=0,t_dp00=dp00,t_dp01=dp01,t_dp02=dp02,t_dp10=dp10,t_dp11=dp11,t_dp12=dp12,M=1e9+7;
+        for(int i=1;i<=n;++i)
+        {
+            dp00=(t_dp00+t_dp01+t_dp02)%M;
+            dp01=t_dp00%M;
+            dp02=t_dp01%M;
+            dp10=(t_dp00+t_dp01+t_dp02+t_dp10+t_dp11+t_dp12)%M;
+            dp11=t_dp10%M;
+            dp12=t_dp11%M;
+            t_dp00=dp00;
+            t_dp01=dp01;
+            t_dp02=dp02;
+            t_dp10=dp10;
+            t_dp11=dp11;
+            t_dp12=dp12;
+        }
+        return (dp00+dp01+dp02+dp10+dp11+dp12)%M;
+    }
+};
