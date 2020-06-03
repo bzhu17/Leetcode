@@ -1,0 +1,20 @@
+//Description: 2D vector with 2n size, v[i][0] represents i-th go to A, v[i][1] go to B,
+// and n people need go to A, find the minimum cost
+
+// At first, I use dfs to try every method but it will TLE
+// And if we sort the vector as the difference of v[i][1]-v[i][0], the difference means if 
+// we choose A we could save how much about B
+
+class Solution {
+public:
+    int twoCitySchedCost(vector<vector<int>>& costs) {
+        sort(costs.begin(),costs.end(),[](const vector<int>&a,const vector<int>&b){return a[1]-a[0]>b[1]-b[0];});
+        int rst=0,n=costs.size();
+        for(int i=0;i<n;++i)
+        {
+            if(i<n/2) rst+=costs[i][0];
+            else rst+=costs[i][1];
+        }
+        return rst;
+    }
+};
