@@ -1,0 +1,37 @@
+//Description: Given a char array representing tasks CPU need to do, a int means between two same tasks, 
+// there must be at least n intervals that CPU are doing different tasks or just be idle. 
+// Return the least number of intervals the CPU will take to finish all the given tasks.
+
+// "Greedy arrangement": always arrange task with most frequency first. Just like 3A, 2B, 1C
+// A ? ? A ? ? A        "?" is "empty" slots. And then we could insert other char.
+// And if the remaining amounts is less than slots number, the result will contain idles,
+// or the array size is the result.
+// Because if remaining is bigger than slots number, we could increase the slots number just like
+// E.g. 3A, 3B, 3C, 3D, 2E, n = 2 -> A B C D | A B C D | A B C D -> A B C D E | A B C D E | A B C D
+
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        int mx=0,mxcnt=0;
+        vector<int> cnt(26);
+        for(auto a:tasks)
+        {
+            ++cnt[a-'A'];
+            if(cnt[a-'A']==mx)
+            {
+                ++mxcnt;
+            }
+            else if(mx<cnt[a-'A'])
+            {
+                mx=cnt[a-'A'];
+                mxcnt=1;
+            }
+        }
+        int partcnt=mx-1;
+        int emptycnt=n-(mxcnt-1);
+        int emptylen=partcnt*emptycnt;
+        int taskempty=tasks.size()-mx*mxcnt;
+        int idles=max(0,emptylen-taskempty);
+        return tasks.size()+idles;
+    }
+};
