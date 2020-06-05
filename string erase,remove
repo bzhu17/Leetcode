@@ -1,0 +1,23 @@
+// I want to erase all '*' in "abc*d*e***fgh" -> "abcdefgh"
+s.erase(remove(s.begin(),s.end(),'*'),s.end);
+
+// remove has three arguments, start of iterator, end of iterator and the value want to remove
+// when first value is not the same as val value, result will move to next, and if they are the
+// same, the result will not move, so if you have 3 same value, the result will stop at a distance
+// of 2 from the end, which means string will store the last three characters
+// like "a*b*c*defg"->"abcdefgefg", and the result is the iterator of the last e, so if I set it 
+// as the first argument of erase, the remaining characters which is "efg" will erase.
+
+template <class ForwardIterator, class T>
+ForwardIterator remove (ForwardIterator first, ForwardIterator last, const T& val)
+{
+  ForwardIterator result = first;
+  while (first!=last) {
+    if (!(*first == val)) {   
+      *result = move(*first);
+      ++result;
+    }
+    ++first;
+  }
+  return result;
+}
