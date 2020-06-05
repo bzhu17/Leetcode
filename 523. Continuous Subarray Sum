@@ -1,0 +1,28 @@
+//Description: Given a list of non-negative numbers and a target integer k, 
+// write a function to check if the array has a continuous subarray of size at least 2 that sums up to a multiple of k, 
+// that is, sums up to n*k where n is also an integer.
+
+// When we see divide we need to cosider a/b if b is 0, and we can use an unordered_map to store [index,remainder], if 
+// two sum has the same remainder, the difference must be n*k, if k is 0, the remainder is the sum itself because if the
+// sum is not 0, it could not work, and we need to initialize the unordered_map with [0,-1] because if there may be only 
+// one value 0.
+
+
+class Solution {
+public:
+    bool checkSubarraySum(vector<int>& nums, int k) {
+        unordered_map<int,int> m{{0,-1}};
+        int sum=0;
+        for(int i=0;i<nums.size();++i)
+        {
+            sum+=nums[i];
+            int t=(k==0)?sum:sum%k;
+            if(m.count(t))
+            {
+                if(i-m[t]>1) return true;
+            }
+            else m[t]=i;
+        }
+        return false;
+    }
+};
