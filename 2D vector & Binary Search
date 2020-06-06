@@ -1,7 +1,7 @@
 //二维vector (m,n)
 vector<vector<int>> v(m, vector<int>(n,0));
 //二维vector (m,n)先按照第一个数排序，如果相同再按照第二个数排序
-sort(v.begin(),v.end(),[](const vector<int>& a,const vector<int>& b){return a[0]<b[0]||a[0]==b[0]&&a[1]<b[1]});
+sort(v.begin(),v.end(),[](const vector<int>& a,const vector<int>& b){return a[0]<b[0]||a[0]==b[0]&&a[1]<b[1];});
 
 //第一类，查找和目标值完全相等的数
 int find(vector<int>& nums, int target)
