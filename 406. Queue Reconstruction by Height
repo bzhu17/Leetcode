@@ -1,0 +1,20 @@
+// Description:a pair of integers (h, k), where h is the height of the person 
+// and k is the number of people in front of this person who have a height greater than or equal to h. 
+// Write an algorithm to reconstruct the queue.
+
+// Sort the vector with the first row bigger and the second row smaller, and insert
+// one by one, it can make sure that all bigger value has set in the vector
+
+class Solution {
+public:
+    vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
+        sort(people.begin(), people.end(), [](vector<int>& a, vector<int>& b) {
+            return a[0] > b[0] || (a[0] == b[0] && a[1] < b[1]);
+        });
+        vector<vector<int>> res;
+        for (auto a : people) {
+            res.insert(res.begin() + a[1], a);
+        }
+        return res;
+    }
+};
