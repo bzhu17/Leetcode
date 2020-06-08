@@ -1,0 +1,50 @@
+// Description: houses[i]: is the color of the house i, 0 if the house is not painted yet.
+// cost[i][j]: is the cost of paint the house i with the color j+1.
+// A neighborhood is a maximal group of continuous houses that are painted with the same color. 
+// For example: houses = [1,2,2,3,3,2,1,1] contains 5 neighborhoods  [{1}, {2,2}, {3,3}, {2}, {1,1}]). 5 target.
+
+// dp[i][j][k] means first house with the final house j color and k target, first we need to initialize
+// the first house, if houses[0]==0, we need to use loop to initialize all possible colors with the cost,
+// if houses[0]!=0, we need to dp[0][houses[i]][1]=0, others colors are impossible.
+// if houses[i]==0, and it means j could loop from 1 to n and each dp[i][j][k] depends on all possible colors
+// so we need add one more loop->c
+// if(c==j), it means i and i-1 has the same target
+// dp[i][j][k]=min(dp[i][j][k],dp[i-1][c][k]+cost[i][j]);
+// else  dp[i][j][k]=min(dp[i][j][k],dp[i-1][c][k-1]+cost[i][j]);
+// if houses[i]!=0, it means j could not change, so we could not write j loop
+// and in the c loop we do not need to add the cost
+
+class Solution {
+public:
+    int minCost(vector<int>& houses, vector<vector<int>>& cost, int m, int n, int target) {
+        int INF=1e8;
+        vector<vector<vector<int>>> dp(m,vector<vector<int>>(n+1,vector<int>(target+1,INF)));
+        if(houses[0]==0)
+            for(int i=0;i<n;++i) dp[0][i+1][1]=cost[0][i];
+        else dp[0][houses[0]][1]=0;
+        for(int i=1;i<m;++i)
+            if(houses[i]==0)
+            {
+                for(int j=1;j<=n;++j)
+                    for(int k=1;k<=target;++k)
+                        for(int c=1;c<=n;++c)
+                        {
+                            if(c!=j) dp[i][j][k]=min(dp[i][j][k],dp[i-1][c][k-1]+cost[i][j-1]);
+                            else dp[i][j][k]=min(dp[i][j][k],dp[i-1][c][k]+cost[i][j-1]);
+                        }
+            }
+            else
+            {
+                int j=houses[i];
+                for(int k=1;k<=target;++k)
+                    for(int c=1;c<=n;++c)
+                    {
+                        if(c!=j) dp[i][j][k]=min(dp[i][j][k],dp[i-1][c][k-1]);
+                        else dp[i][j][k]=min(dp[i][j][k],dp[i-1][c][k]);
+                    }
+            }
+        int rst=INF;
+        for(int i=1;i<=n;++i) rst=min(rst,dp[m-1][i][target]);
+        return rst==INF?-1:rst;
+    }
+};
