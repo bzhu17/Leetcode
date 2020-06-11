@@ -1,0 +1,24 @@
+// Description:vector only has 0,1,2 and we need to sort the vector in-order
+
+// We can use two pointers, and then loop the vector if it is 0, just swap it 
+// with the left pointer and ++left, and if it is 2, swap it with the right 
+// pointer and --right, and then --i to compare the number that swapped and in
+// the loop i <=right
+
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        int left=0,right=nums.size()-1;
+        for(int i=0;i<=right;++i)
+        {
+            if(nums[i]==2)
+            {
+              swap(nums[i--],nums[right--]);
+            }
+            else if(nums[i]==0)
+            {
+              swap(nums[i],nums[left++]);
+            }
+        }
+    }
+};
