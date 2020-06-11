@@ -1,0 +1,53 @@
+// Description:account with the same email information should be merged
+
+// We should use Union find,union find could help to find the root of one
+// account, we first use unordered_map to store email links to account, when
+// we find the repeat account, just find the root of current account and set
+// it as the root of the value in unordered_map to make sure the current account
+// to be set in the original root.
+
+// Union find could help to find the root just like
+// 0  1  2  3  4
+// 0  0  1  2  3  
+// when we select 4, find will help us 4->3->2->1->0
+// to find the root, so when we consider whether one account has relations with 
+// another account, we should consider the root of the account, not itself.
+
+class Solution {
+public:
+    int find(vector<int>& root,int i)
+    {
+        return (root[i]==i)?i:find(root,root[i]);
+    }
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        int n=accounts.size();
+        vector<int> root(n);
+        vector<vector<string>> rst;
+        unordered_map<string,int> m;
+        for(int i=0;i<n;++i)
+        {
+            root[i]=i;
+            for(int j=1;j<accounts[i].size();++j)
+            {
+                if(m.count(accounts[i][j]))
+                {
+                    root[find(root,i)]=find(root,m[accounts[i][j]]);
+                }
+                else
+                    m[accounts[i][j]]=i;
+            }
+        }
+        unordered_map<int,vector<string>> ma;
+        for(auto a:m)
+        {
+            ma[find(root,a.second)].push_back(a.first);
+        }
+        for( auto it : ma ) {
+            sort( it.second.begin(), it.second.end() );
+            vector<string> tmp = { accounts[it.first][0] };
+            tmp.insert( tmp.end(), it.second.begin(), it.second.end() );
+            res.push_back( tmp );
+        }
+        return rst;
+    }
+};
