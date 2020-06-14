@@ -1,0 +1,53 @@
+// Description: Graph with source to destination up to stop K times to find the cheapest money
+
+// DFS will be TLE, so first we need to use visited to store the node we have visited to make sure 
+// there will be no loop forever and then we need to cut some levels. When each time we go to link
+// node we could consider if it has been visited and compare the rst with the all cost in the path,
+// if the cost is bigger than the rst, just continue, and if source equals to destination, just set
+// the num as rst because when num is bigger we have continued. And if K is less than 0, just return.
+
+// It can also us dp, dp[i][j] means i steps go to j costs, at first initialize with 1e9 and loop flights
+// dp[i][j]=min(dp[i][j],dp[i-1][flight[0]]+flight[2]), because dp[i][src]=0 so whatever how many steps to
+// source it will be zero so it will find the cheapest
+
+class Solution {
+public:
+    void help(unordered_map<int,vector<pair<int,int>>>& m,int src,int dst,int K,unordered_set<int>& visited,int num,int&rst)
+    {
+        if(src==dst) {rst=num;return;}
+        if(K<0) return;
+        for(auto a:m[src])
+        {
+            if(visited.count(a.first)||num+a.second>rst) continue;
+            visited.insert(a.first);
+            help(m,a.first,dst,K-1,visited,num+a.second,rst);
+            visited.erase(a.first);
+        }
+    }
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K) {
+        unordered_map<int,vector<pair<int,int>>> m;
+        unordered_set<int> visited{{src}};
+        for(auto a:flights)
+        {
+            m[a[0]].push_back({a[1],a[2]});
+        }
+        int rst=INT_MAX;
+        help(m,src,dst,K,visited,0,rst);
+        return rst==INT_MAX?-1:rst;
+    }
+};
+
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K) {
+        vector<vector<int>> dp(K + 2, vector<int>(n, 1e9));
+        dp[0][src] = 0;
+        for (int i = 1; i <= K + 1; ++i) {
+            dp[i][src] = 0;
+            for (auto x : flights) {
+                dp[i][x[1]] = min(dp[i][x[1]], dp[i - 1][x[0]] + x[2]);
+            }
+        }
+        return (dp[K + 1][dst] >= 1e9) ? -1 : dp[K + 1][dst];
+    }
+};
