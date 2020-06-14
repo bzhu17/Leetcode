@@ -1,0 +1,41 @@
+// Description: Given a set of distinct positive integers, find the largest subset such that 
+// every pair (Si, Sj) of elements in this subset satisfies: Si % Sj = 0 or Sj % Si = 0.
+
+// dp with pair, first store the number of subset before i and second is the index of the subset 
+// which is before the nums[i], so when we set rst we can trace back. If we want to determine 
+// whether one number could add to the subset, we just need to number%last value, so we first 
+// sort the vector, and then one loop to search each element in the vector and then the second 
+// loop to determine from i to 0 to find the max length of the subset, if nums[i]%nums[j]==0 and 
+// dp[j].first+1>dp[i].first, we need to refresh the dp and determine if the length of new subset
+// is the biggest, if true then refresh mx and mx_index, finally, mx means the max length and we just
+// need to use mx_idx as index to make the vector rst to get a reverse subset
+
+class Solution {
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        sort(nums.begin(),nums.end());
+        vector<int> rst;
+        vector<pair<int,int>> dp(nums.size());
+        int mx=0,mx_idx=0;
+        for(int i=0;i<nums.size();++i)
+            for(int j=i;j>=0;--j)
+            {
+                if(nums[i]%nums[j]==0&&dp[i].first<dp[j].first+1)
+                {
+                    dp[i].first=dp[j].first+1;
+                    dp[i].second=j;
+                    if(mx<dp[i].first)
+                    {
+                        mx=dp[i].first;
+                        mx_idx=i;
+                    }
+                }
+            }
+        for(int i=0;i<mx;++i)
+        {
+            rst.push_back(nums[mx_idx]);
+            mx_idx=dp[mx_idx].second;
+        }
+        return rst;
+    }
+};
