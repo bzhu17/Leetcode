@@ -1,0 +1,41 @@
+// Description: Given an array of strings arr. String s is a concatenation of a sub-sequence of arr which have unique characters.
+// Return the maximum possible length of s.
+
+// arr = ["un","iq","ue"] -> "","un","iq","ue","uniq" and "ique" -> Maximum length is 4.
+
+// It is easier to think about using dfs and use a vector to store the char which it has, but using bit is more better,
+// there is totally 26 letters so we can use 1 bit to represent 1 letter and use int to represents the state, if two 
+// string do not have the same char, two int & each other will equal to 0 and then | each other we could get the combining
+// string, this will decrease the comparing time. And if the string itself has the same char, we should drop it, so at first
+// we deal with the vector and choose no duplicate char string to put in the vector, using __builtin_popcount() to get the 
+// number of 1 in number to make sure whether the string has the same char -- __builtin_popcount() is a built-in function in GCC.
+
+class Solution {
+public:
+    void dfs(vector<int>& bits,int i,int cur,int&rst)
+    {
+        rst=max(rst,__builtin_popcount(cur));
+        for(;i<bits.size();++i)
+        {
+            if((cur&bits[i])==0)
+            {
+                dfs(bits,i+1,cur|bits[i],rst);
+            }
+        }
+    }
+    int maxLength(vector<string>& arr) {
+        vector<int> bits;
+        int n=arr.size(),rst=0;
+        for(auto s:arr)
+        {
+            int bit=0;
+            for(auto c:s)
+            {
+                bit|=1<<(c-'a');
+            }
+            if(__builtin_popcount(bit)==s.size()) bits.push_back(bit);
+        }
+        dfs(bits,0,0,rst);
+        return rst;
+    }
+};
