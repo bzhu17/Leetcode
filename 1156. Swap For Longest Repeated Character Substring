@@ -1,0 +1,44 @@
+// Description: swap two charactors in string to find the longest repeat string
+
+// We can store the index of one charactor, just like aabaabaaa
+// a-> 0,1,3,4,6,7,8, b-> 2,5
+// and we could use cur to represent currenty longest repeat and pre is the previous
+// longest repeat, if pre and cur could link it means two index minus is 2, and then
+// we could set pre as cur and cur equals to 1, if minus is 1 it means we need ++cur,
+// and after one charactor loop, we need to compare sum and the vector size becuase if
+// sum less than vector it means we could move another char to the gap sum need to plus
+// 1 but if sum not less than vector, it means we can not find another one we just could 
+// use the one that we count in sum.
+
+class Solution {
+public:
+    int maxRepOpt1(string text) {
+        unordered_map<char,vector<int>> ma;
+        int rst=0;
+        for(int i=0;i<text.size();++i)
+            ma[text[i]].push_back(i);
+        for(auto &a:ma)
+        {
+            int cur=1,pre=0,sum=0;
+            for(int i=0;i<a.second.size()-1;++i)
+            {
+                if(a.second[i+1]-a.second[i]==1)
+                {
+                    ++cur;
+                }
+                else 
+                {
+                    if(a.second[i+1]-a.second[i]==2)
+                        pre=cur;
+                    else
+                        pre=0;
+                    cur=1;
+                }
+                sum=max(sum,pre+cur);
+            }
+            if(sum<a.second.size()) ++sum;
+            rst=max(sum,rst);
+        }
+        return rst;
+    }
+};
