@@ -1,0 +1,49 @@
+// Description: anti-clock get the node in tree
+//       1
+//     2    3
+//   4  5   6
+//    78      9     -> [1,2,4,7,8,9,6,3]
+//    left+leaf+right
+
+// When meet tree it is good to use recursive, we can use two recursive one starts with root->left,
+// the other starts with root->right, and if we recursive in left tree, left is 1 and right is 0, if left
+// is true, we need to push it in rst, and then if the node->left is true, we need to set left as true,
+// if !node->left and node->right,we also need to set left as true. We need to judge left before recursive
+// and right after recursive. After juge node we need to consider if it is leaf, if it is we need to push 
+// it in rst because the last left node is also the first leaf node.
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    void helper(TreeNode* node,bool left,bool right,vector<int>& rst)
+    {
+        if(!node) return;
+        if(!node->left&&!node->right)
+        {
+            rst.push_back(node->val);
+            return;
+        }
+        if(left) rst.push_back(node->val);
+        helper(node->left,left&&node->left,right&&!node->right,rst);
+        helper(node->right,left&&!node->left,right&&node->right,rst);
+        if(right) rst.push_back(node->val);
+    }
+    vector<int> boundaryOfBinaryTree(TreeNode* root) {
+        vector<int> rst;
+        if(!root) return rst;
+        rst.push_back(root->val);
+        helper(root->left,true,false,rst);
+        helper(root->right,false,true,rst);
+        return rst;
+    }
+};
