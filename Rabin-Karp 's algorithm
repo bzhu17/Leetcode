@@ -1,0 +1,23 @@
+// With one loop algorithm could find the repeat string, it give each string a hash just like "abc"-> (0x26x26+1x26+3)%mod
+// because 26 charactors so multiply 26 and we need a big enough mod or it will have collapse leading a failture. And the 
+// trick is how to calculate the next string hash value in O(1), algorithm use the previous hash value minus the left digit
+// and then plut the right digit, we can set a pre-value which base(I set 26 becuase 26 charactors) ^n to represent the first
+// digit need to multiply, like if the length is 3, the left digit need to multiply base^2 and we could get base^3 when we get 
+// it in the loop to get the first hash-value, so we could hash-value=(hash-value*base-(S[i-1]-'a')*pre-value+S[i+length-1]+mod)%mod
+// plus mod is for if the hash-value is nonpositive number. And the first hash-value we could get as 
+// hash-value=(hash-value*base+S[i]-'a')%mod, becasue (a+b)%c=(a%c+b%c)%c, so for not over the range, we need to % the every digit
+// we get
+
+    long long val=0,pre=1,mod=(long long)pow(2,34);// just get a big enough number
+    for(int i=0;i<len;++i)
+    {
+      val=(val*base+S[i]-'a')%mod;
+      pre=(pre*base)%mod;
+    }
+    unordered_set<int> sets;
+    for(int i=1;i<=n-len;++i)
+    {
+      val=(val*26-(S[i-1]-'a')*pre+mod+S[i+len-1]-'a')%mod;
+      if(s.count(val)) return i;// find the repeat strnig
+      else s.insert(val);
+    }
