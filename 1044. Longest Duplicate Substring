@@ -1,0 +1,38 @@
+// Description: return any duplicated substring has the longest possible length.
+
+// The longest possible length is between 1 and size of string, so we could first use binary search
+// to set the length and then judge if the length is true or false with Rabin-Karp's algorithm, and 
+// finally, the length is left-1, just use Rabin-Karp's algorithm to find the start position
+
+class Solution {
+public:
+    int search(string S,int len)
+    {
+        long long mod=(long long)pow(2,34),val=0,pre=1,n=S.size();
+        unordered_set<long long> s;
+        for(int i=0;i<len;++i)
+        {
+            val=(val*26+S[i]-'a')%mod;
+            pre=(pre*26)%mod;
+        }
+        s.insert(val);
+        for(int i=1;i<n-len+1;++i)
+        {
+            val=(val*26-pre*(S[i-1]-'a')+mod+S[i+len-1]-'a')%mod;
+            if(s.count(val)) return i;
+            else s.insert(val);
+        }
+        return -1;
+    }
+    string longestDupSubstring(string S) {
+        int n=S.size(),left=1,right=n;
+        while(left<right)
+        {
+            int mid=left+(right-left)/2;
+            if(search(S,mid)!=-1) left=mid+1;
+            else right=mid;
+        }
+        int start=search(S,left-1);
+        return S.substr(start,left-1);
+    }
+};
