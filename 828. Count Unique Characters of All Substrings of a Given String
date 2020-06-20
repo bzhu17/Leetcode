@@ -1,0 +1,60 @@
+// Description: "ABC"-> "A" "B" "C" "AB" "BC" "ABC" ->Unique charactor: 1+1+1+2+2+3=10
+
+// The important is the charactor position of the last time and the last last time,
+// because the last position+1 until current will not have the charactor, and the last
+// last only has one charator and if add one more, it need to minus it because of the
+// number > 1
+
+// We can use dp[i] means 0 to ith charactor has the number of unique charactor,
+// like "AB" dp[2]=3, and if the next is C, "ABC" dp[3]=1+dp[2]+(2-0)-(0-0), and if
+// the next is A dp[3]=1+dp[2]+(2-1)-(1-0), (i-last position) means how many string
+// could use the charactor only one time, and minus(last - last last) means the 
+// charactor number > 1 so we need to minus it. And because dp[i] depends on dp[i-1]
+// so we just need a cur to represent it.
+
+class Solution {
+public:
+    int uniqueLetterString(string s) {
+        int rst=0,cur=0,M=1e9+7;
+        vector<int> first(26),second(26);
+        for(int i=0;i<s.size();++i)
+        {
+            int c=s[i]-'A';
+            cur=1+cur+i-2*second[c]+first[c];
+            rst=(rst+cur)%M;
+            first[c]=second[c];
+            second[c]=i+1;
+        }
+        return rst;
+    }
+};
+
+// We can also think as another way, we do not consider one string has how many unique
+// charactor, we consider one charactor can be only the unique charactor in how many 
+// strings, just like "CACACCAC", the second A has two position in left(the last position)
+// and has three position in right(the next position), so the second A in 2*3 strings is 
+// unqiue. So we can use a 2D vector to store the last and last last position, and we can
+// calculate the last position number, finally, we calculate the last position contribution.
+
+class Solution {
+public:
+    int uniqueLetterString(string s) {
+        int rst=0,n=s.size(),M=1e9+7;
+        vector<vector<int>> v(26,vector<int>(2,-1));
+        for(int i=0;i<n;++i)
+        {
+            int c=s[i]-'A';
+            rst=(rst+(v[c][1]-v[c][0])*(i-v[c][1])%M)%M;
+            v[c][0]=v[c][1];
+            v[c][1]=i;
+        }
+        for(auto &a:v)
+        {
+            if(a[1]!=-1)
+            {
+                rst=(rst+(a[1]-a[0])*(n-a[1])%M)%M;
+            }
+        }
+        return rst;
+    }
+};
