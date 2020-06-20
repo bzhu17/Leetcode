@@ -1,0 +1,37 @@
+// Description: an array reprents the flower bloom day, and we need to use k continuous flowers to make a bouquet,
+// we want to get m bouquets, return the minimum number of day, if we can not, return -1.
+
+// It needs to use Binary Search, I think they may think using Binary Search because if the flowers is enough to make
+// bouquets(n>=m*k), it must have a day that we can finish the job, so we can directly using Binary Search to find the
+// result, the range is [1,1e9] and with each mid we loop from 0 to n, to find how may bouquets we could get, if current
+// more than mid, it means we need to set flowers as 0 because it is a break, and each time ++flowers, if >=k, we finish
+// a bouquet, with this method we could get the most bouquets, if the bouquets >=m, right=mid, else if the bouquets<m, 
+// left=mid+1
+
+class Solution {
+public:
+    int minDays(vector<int>& A, int m, int k) {
+        int left=1,right=1e9,n=A.size();
+        if(m*k>n) return -1;
+        while(left<right)
+        {
+            int mid=(left+right)/2;
+            int flo=0,bouq=0;
+            for(int j=0;j<n;++j)
+            {
+                if(A[j]>mid)
+                    flo=0;
+                else if(++flo>=k)
+                {
+                    ++bouq;
+                    flo=0;
+                }
+            }
+            if(bouq<m)
+                left=mid+1;
+            else
+                right=mid;
+        }
+        return left;
+    }
+};
