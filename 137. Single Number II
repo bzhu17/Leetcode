@@ -1,0 +1,23 @@
+// Description: each number without one appears 3 times, use o(n) and no extra space find the number only appear one time
+
+// The difficult is how to store the value which has appeared, one method is to think as the bit, we can deal with each bit
+// of 32 bits, and if the total numbers of 1 in the bits can %3==0, means this bit is 0 in the number we found.
+
+
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int rst=0;
+        for(int i=0;i<32;++i)
+        {
+            int sum=0;
+            for(int j=0;j<nums.size();++j)
+            {
+                sum+=(nums[j]>>i)&1;
+            }
+            rst|=(sum%3)<<i;
+        }
+        return rst;
+    }
+};
