@@ -1,0 +1,39 @@
+// Trie is a data structure could help find string whether available easily, root node store nullptr and
+// the other node stores one charactor, the path is a unique string, each node has 26 position to store 
+// 26 charactors, and it will have find, search etc methods.
+
+//First using struct TrieNode as the node of the trie
+struct TrieNode{
+  TrieNode* child[26];
+  string str;
+  TrieNode():str(""){
+    for(auto &a:child)
+    {
+      a=nullptr;
+    }
+  }
+};
+
+struct Trie{
+  TrieNode* root;
+  Trie(){ root=new TrieNode();}
+  void insert(string s){
+    TrieNode* t=root;
+    for(auto &a:s)
+    {
+      if(!t->child[a-'a']) t=new TrieNode();
+      t=t->child[a-'a'];
+    }
+    t->str=s;
+  }
+  bool search(string s)
+  {
+    TrieNode* t=root;
+    for(auto& a:s)
+    {
+      if(!t->child[a-'a']) return false;
+      t=t->child[a-'a'];
+    }
+    return t->str==s;
+  }
+};
