@@ -1,0 +1,53 @@
+// Description: a positive number array, finding the maximum sum of 3 continuous k length subarrays without overlap
+
+// At first I consider using dp with 3 vectors, v1 reprents 1 subarray from 0 to i the biggest k sum and the position,
+// and v2 represents 2 subarrays, and v3 represents 3 subarrays, then we use v1 to refresh v2 and v2 to refresh v3, but
+// it is slower.(I think the slower becuase of I did not using sum-arrays to get the subarray sum quickly)
+
+// We can consider there is 3 subarrays, so from left to right, left must has one and right must have one, so we need two
+// vectors represents left[i] means from 0 to i the biggest sum's starting position and right[i] means from i to n-1 the 
+// biggest subarray sum's starting position, so we just need to find the mid one, range is [k,n-2*k], length is k, and using
+// left biggest+right biggest compared with existing rst. Sum-arrays could helps us quickly find the sum of the subarrays.
+// The index of sum-array and array is ..confusing, you could put a 0 at the sum-arrays so that you could using sums[i]-sums[j]
+// to calculate the sum or when beginning is 0, sum is sums[i] itself, but with 0 the sum-arrays index is 1 bigger than array.
+
+class Solution {
+public:
+    vector<int> maxSumOfThreeSubarrays(vector<int>& nums, int k) {
+        int n=nums.size(),mx=INT_MIN;
+        vector<int> sums{nums[0]},left(n,0),right(n,n-k),rst;
+        for(int i=1;i<n;++i) sums.push_back(sums.back()+nums[i]);
+        for(int i=k,total=sums[i-1];i<n;++i)
+        {
+            if(sums[i]-sums[i-k]>total)
+            {
+                left[i]=i-k+1;
+                total=sums[i]-sums[i-k];
+            }
+            else
+                left[i]=left[i-1];
+        }
+        for(int i=n-k-1,total=sums[n-1]-sums[i];i>0;--i)
+        {
+            if(sums[i+k-1]-sums[i-1]>=total)
+            {
+                right[i]=i;
+                total=sums[i+k-1]-sums[i-1];
+            }
+            else
+                right[i]=right[i+1];
+        }
+        for(int i=k;i<=n-2*k;++i)
+        {
+            int l=left[i-1],r=right[i+k];
+            int total=sums[i+k-1]-sums[i-1]+sums[r+k-1]-sums[r-1]+sums[l+k-1];
+            if(l) total-=sums[l-1];
+            if(mx<total)
+            {
+                mx=total;
+                rst={l,i,r};
+            }
+        }
+        return rst;
+    }
+};
