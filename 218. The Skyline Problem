@@ -1,0 +1,44 @@
+// Description: Now suppose you are given the locations and height of all the buildings as shown on a cityscape photo (Figure A), 
+// write a program to output the skyline formed by these buildings collectively (Figure B). The skyline is the counter
+
+// It is easy to think use set to store the value and sort the value, when the value is the beginning, insert it or delete it. And
+// because the height may be the same, so we need multiset, we first need to store the x-value and height in to a vector and sort it,
+// and then loop the vector and deal with the value. And the trick is to store the beginning value as a negative-number, the advatange
+// is first we can divide begining and the ending and the other is if the value is same, the tallest one will get first. And the other
+// trick is when we erase in multiset, if we just erase the key, it will erase all key so it use m.erase(m.find(key)) to erase only one 
+// key, and as the same reason, it will delete the smallest height, if the biggest number in multiset is the same as previous highest 
+// height, we would not insert it int rst. And we could first insert 0 in multiset, so when a serious building finished, the biggest value
+// in multiset is 0, which is we want.
+
+
+// vector<pair<int,int>> sorted is faster than vector<vector<int>> sorted
+
+class Solution {
+public:
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+        vector<vector<int>> rst;
+        if(buildings.empty()||buildings[0].empty()) return rst;
+        multiset<int> sets;
+        vector<pair<int,int>> h;
+        for(auto &a:buildings)
+        {
+            h.push_back({a[0],-a[2]});
+            h.push_back({a[1],a[2]});
+        }
+        sort(h.begin(),h.end());
+        int pre=0;
+        sets.insert(0);
+        for(auto &a:h)
+        {
+            if(a.second<0) sets.insert(-a.second);
+            else sets.erase(sets.find(a.second));
+            int cur=*sets.rbegin();
+            if(pre!=cur)
+            {
+                rst.push_back({a.first,cur});
+                pre=cur;
+            }
+        }
+        return rst;
+    }
+};
