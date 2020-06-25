@@ -1,0 +1,50 @@
+// Description: Given an array nums containing n + 1 integers where each integer is between 1 and n (inclusive),
+// assume that there is only one duplicate number, find the duplicate one.
+
+// We know the duplicate number will in range [1,n], so we could use Binary search to find it, but the array is
+// out of order, so we need to use its value. When we find the mid, if there is no duplicate, the number <= mid
+// should equal to mid, and if it is <= mid, the duplicate one must bigger than mid.
+
+// It can also use 环检测 with O(n), when a list has a circle, slow and fast pointer will meet in one of the circle
+// node, and then with another pointer starts with the begining, the pointer speed equals to slow, they meet at the
+// begining of the circle. And the other difficulty is how to change the array to a list, becuase of the description,
+// number in array is between 1 and n, so we could just use the value as the index.
+
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int n=nums.size()-1,left=1,right=n;
+        while(left<right)
+        {
+            int mid=left+(right-left)/2,num=0;
+            for(auto& a:nums)
+            {
+                if(a<=mid) ++num;
+            }
+            if(num<=mid) left=mid+1;
+            else right=mid;
+        }
+        return left;
+    }
+};
+
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        if (nums.empty()) {
+            return 0;
+        }
+        int slow = nums[0];
+        int fast = nums[nums[0]];
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        }
+        fast = 0;
+        while (fast != slow) {
+            fast = nums[fast];
+            slow = nums[slow];
+        }
+        return fast;
+    }
+};
