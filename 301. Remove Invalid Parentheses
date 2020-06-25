@@ -1,0 +1,101 @@
+// Description: input string may contain letters other than the parentheses '(' and ')', 
+// remove the minimum number of invalid parentheses in order to make the input string valid. Return all possible results.
+
+// Because removing the minimum number, so we could use bfs to remove one '(' or ')', if the modified string is valid, then
+// stopping, because when string valid, '(' and ')' must be in pair, so next modified will remove one and will not be in pair,
+// so we can just valid the string in queue, and when string is valid, insert into rst, and does not loop to remove '(' or ')',
+// and the previous less one '(' or ')' would not be in pair.
+
+// We also could use Dfs, first we need to find how many '(' and ')' we need to remove, and we first to remove ')' becuase we 
+// want to make the previous valid, and then remove '(', we use l represents the number of removing '(' and r represents ')',
+// when l==0 && r==0, it means we finish removing and if the string is valid, insert into rst. And how to make the rst unique,
+// repeat string comes from continuous string, so we just remove the first charactor of the continuous string.
+
+class Solution {
+public:
+    bool isval(string s)
+    {
+        int cnt=0;
+        for(int i=0;i<s.size();++i)
+        {
+            if(s[i]=='(') ++cnt;
+            else if(s[i]==')'&&--cnt<0) return false;
+        }
+        return cnt==0;
+    }
+    vector<string> removeInvalidParentheses(string s) {
+        unordered_set<string> visited{{s}};
+        vector<string> rst;
+        queue<string> q{{s}};
+        int br=0;
+        while(!q.empty())
+        {
+            string st=q.front();q.pop();
+            if(isval(st))
+            {
+                rst.push_back(st);
+                br=1;
+            }
+            if(br) continue;
+            for(int i=0;i<st.size();++i)
+            {
+                if(st[i]!='('&&st[i]!=')') continue;
+                string t=st.substr(0,i)+st.substr(i+1);
+                if(!visited.count(t))
+                {
+                    q.push(t);
+                    visited.insert(t);
+                }
+            }
+        }
+        return rst;
+    }
+};
+
+class Solution {
+public:
+    bool isval(string s)
+    {
+        int cnt=0;
+        for(int i=0;i<s.size();++i)
+        {
+            if(s[i]=='(') ++cnt;
+            else if(s[i]==')'&&--cnt<0) return false;
+        }
+        return cnt==0;
+    }
+    void dfs(string s,int start,int l,int r,vector<string>&rst)
+    {
+        if(l==0&&r==0)
+        {
+            if(isval(s)) rst.push_back(s);
+            return;
+        }
+        for(int i=start;i<s.size();++i)
+        {
+            if(i!=start&&s[i]==s[i-1]) continue;
+            if(s[i]=='('||s[i]==')')
+            {
+                string cur=s;
+                cur.erase(i,1);
+                if(r>0) dfs(cur,i,l,r-1,rst);
+                else if(l>0) dfs(cur,i,l-1,r,rst);
+            }
+        }
+    }
+    vector<string> removeInvalidParentheses(string s) {
+        vector<string> rst;
+        int l=0,r=0;
+        for(auto &a:s)
+        {
+            if(a=='(') ++l;
+            else if(a==')')
+            {
+                if(l==0) ++r;
+                else --l;
+            }
+        }
+        dfs(s,0,l,r,rst);
+        return rst;
+    }
+};
