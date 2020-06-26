@@ -1,0 +1,49 @@
+// Description: 4 number with +,-,*,/,(,) to get the value 24.
+
+// ( and ) just to make sure that any two number could calculate first, so we can just think +,-,*,/, at first
+// I think to list all composible equation and judge them. But we can just calculate two numbers and then take 
+// the result with the remaining part to calculate again, finally, the vector with only one number is the result.
+// And the another trick is about the /, a/b, b can not be 0 and accuracy will lose, so we could use abs(result-24)<0.001
+// to make sure that losen accuracy can be tolerated.
+
+class Solution {
+public:
+    bool helper(vector<double> vec)
+    {
+        if(vec.size()==1)
+            return abs(vec[0]-24)<0.001;
+        for(int i=0;i<vec.size();++i)
+            for(int j=i+1;j<vec.size();++j)
+            {
+                vector<double> cur(vec.size()-1);
+                for(int k=0,index=0;k<vec.size();++k)
+                {
+                    if(k!=i&&k!=j)
+                        cur[index++]=vec[k];
+                }
+                cur.back()=vec[i]+vec[j];
+                if(helper(cur)) return true;
+                cur.back()=vec[i]-vec[j];
+                if(helper(cur)) return true;
+                cur.back()=vec[j]-vec[i];
+                if(helper(cur)) return true;
+                cur.back()=vec[i]*vec[j];
+                if(helper(cur)) return true;
+                if(vec[j]!=0)
+                {
+                    cur.back()=vec[i]/vec[j];
+                    if(helper(cur)) return true;
+                }
+                if(vec[i]!=0)
+                {
+                    cur.back()=vec[j]/vec[i];
+                    if(helper(cur)) return true;
+                }
+            }
+        return false;
+    }
+    bool judgePoint24(vector<int>& nums) {
+        vector<double> vec(nums.begin(),nums.end());
+        return helper(vec);
+    }
+};
