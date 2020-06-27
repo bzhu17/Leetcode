@@ -1,0 +1,96 @@
+// Description: Design a max stack that supports push, pop, top, peekMax and popMax.
+
+// We can use two stacks, s1 is the normal stack, and the other s2 only pushes the current biggest number, when popMax,
+// we create a new stack and pop s1 into it until meet the top of s2, and then use push to re-push new stack, not push 
+// into s1, because s2 may be empty so we need to use push when s2 is empty push the new number into s2
+
+// It can also use a list to store all number and a map to store the number with its iterator, because in map the value
+// could be in order, so the max is the last number and we could also get its iterator.
+
+class MaxStack {
+public:
+	/** initialize your data structure here. */
+	MaxStack() {
+
+	}
+
+	void push(int x) {
+		s1.push(x);
+		if (s2.empty() || s2.top() <= x)
+			s2.push(x);
+	}
+
+	int pop() {
+		if (!s2.empty() && s1.top() == s2.top())
+			s2.pop();
+		int rst = s1.top();
+		s1.pop();
+		return rst;
+	}
+
+	int top() {
+		return s1.top();
+	}
+
+	int peekMax() {
+		return s2.top();
+	}
+
+	int popMax() {
+		stack<int> tmp;
+		while (s1.top() != s2.top())
+		{
+			tmp.push(s1.top()); s1.pop();
+		}
+		int rst = s1.top();
+		s1.pop(); s2.pop();
+		while (!tmp.empty())
+		{
+			push(tmp.top());
+			tmp.pop();
+		}
+		return rst;
+	}
+private:
+	stack<int> s1, s2;
+};
+
+class MaxStack {
+public:
+    /** initialize your data structure here. */
+    MaxStack() {}
+    
+    void push(int x) {
+        v.insert(v.begin(), x);
+        m[x].push_back(v.begin());
+    }
+    
+    int pop() {
+        int x = *v.begin();
+        m[x].pop_back();
+        if (m[x].empty()) m.erase(x);
+        v.erase(v.begin());
+        return x;
+    }
+    
+    int top() {
+        return *v.begin();
+    }
+    
+    int peekMax() {
+        return m.rbegin()->first;
+    }
+    
+    int popMax() {
+        int x = m.rbegin()->first;
+        auto it = m[x].back();
+        m[x].pop_back();
+        if (m[x].empty()) m.erase(x);
+        v.erase(it);
+        return x;
+    }
+
+private:
+    list<int> v;
+    map<int, vector<list<int>::iterator>> m;
+};
