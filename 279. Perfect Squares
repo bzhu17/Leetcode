@@ -1,0 +1,18 @@
+// Description: Given a positive integer n, find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to n.
+
+// Dp[i] means i needs how many perfect square numbers, if we want to get the dp[i], we need to travese all perfect square numbers that is 
+// smaller than i, and find the minimum.
+
+class Solution {
+public:
+    int numSquares(int n) {
+        vector<int> dp(n+1,INT_MAX);
+        dp[0]=0;
+        for(int i=1;i<=n;++i)
+            for(int j=1;j*j<=i;++j)
+            {
+                dp[i]=min(dp[i],dp[i-j*j]+1);
+            }
+        return dp[n];
+    }
+};
