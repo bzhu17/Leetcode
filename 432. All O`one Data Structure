@@ -1,0 +1,94 @@
+// Description: Implement a data structure increase, decrease, getmax, getmin with O(1).
+
+// To make sure increase, decrease finding in O(1), we need to use unordered_map, but the difficulty is to getmax, getmin in O(1),
+// so we need to use list, the value of unordered_map is iterator of list, and we need to store numbers and string in list, string
+// can use unordered_set. We could manage list with ascendant, and getmax just need to find the last, getmin just need to find the 
+// first if list is not empty, and with increase, if we do not find the string, if the number of first element is not 1 or list is 
+// empty, we need to insert at the beginning, or if the number of first element is 1, we just need to insert the string in first element,
+// if we find the string in map, we just need to consider if the next element is the end or the number of next element does not equal
+// to current+1, we need to insert one element, or we just need to insert in next element. And decrease is similary to increase.
+
+class AllOne {
+public:
+    /** Initialize your data structure here. */
+    AllOne() {
+        
+    }
+    
+    /** Inserts a new key <Key> with value 1. Or increments an existing key by 1. */
+    void inc(string key) {
+        auto it=m_.find(key);
+        if(it==m_.end())
+        {
+            if(l_.empty()||l_.front().val!=1)
+            {
+                l_.push_front({1,{key}});
+            }
+            else
+                l_.front().sets.insert(key);
+            m_[key]=l_.begin();
+            return;
+        }
+        auto iter=it->second;
+        auto niter=next(iter);
+        if(niter==l_.end()||niter->val!=iter->val+1)
+            niter=l_.insert(niter,{iter->val+1,{}});
+        niter->sets.insert(key);
+        m_[key]=niter;
+        iter->sets.erase(key);
+        if(iter->sets.empty())
+            l_.erase(iter);
+        return;
+    }
+    
+    /** Decrements an existing key by 1. If Key's value is 1, remove it from the data structure. */
+    void dec(string key) {
+        auto it=m_.find(key);
+        if(it==m_.end()) return;
+        auto iter=it->second;
+        if(iter->val>1)
+        {
+            auto piter=prev(iter);
+            if(iter==l_.begin()||piter->val!=iter->val-1)
+            {
+                piter=l_.insert(iter,{iter->val-1,{}});
+            }
+            piter->sets.insert(key);
+            m_[key]=piter;
+        }
+        else
+        {
+            m_.erase(key);
+        }
+        iter->sets.erase(key);
+        if(iter->sets.empty())
+            l_.erase(iter);
+        return;
+    }
+    
+    /** Returns one of the keys with maximal value. */
+    string getMaxKey() {
+        return l_.empty()?"":*(l_.back().sets.begin());
+    }
+    
+    /** Returns one of the keys with Minimal value. */
+    string getMinKey() {
+        return l_.empty()?"":*(l_.front().sets.begin());
+    }
+private:
+    struct Node{
+        int val;
+        unordered_set<string> sets;
+    };
+    list<Node> l_;
+    unordered_map<string,list<Node>::iterator> m_;
+};
+
+/**
+ * Your AllOne object will be instantiated and called as such:
+ * AllOne* obj = new AllOne();
+ * obj->inc(key);
+ * obj->dec(key);
+ * string param_3 = obj->getMaxKey();
+ * string param_4 = obj->getMinKey();
+ */
