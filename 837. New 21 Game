@@ -1,0 +1,87 @@
+// Description: each time get a number from 1 to W, and if the total number sum is >=K, stop getting the number, and calculate
+// the probability N or less points.
+
+// N = 10, K = 1,  W = 10 -> 1.00000
+// N = 6,  K = 1,  W = 10 -> 0.60000
+// N = 21, K = 17, W = 10 -> 0.73278
+
+// When we choose i from 1 to W, the probability is 1/W, and if total(cur+i) is >=K, we can not get another number and then if 
+// total is <=N, we could previous probability * 1/W or we could just drop it, the recursive method is to loop from 1 to W and 
+// try it again and agin, if the cur is >=K, then return, each level needs to multiple 1/W, just like dfs, but it will TLE
+
+// And if we consider W, total sum is from [sum-W,sum-W+1,..., sum-1], so it can use dp to status transform, dp[i] means the 
+// probability of total is i, so the result is sum(dp[K],dp[N]), because the minimal of total is K, we just stop when we get total
+// >= K, O(n)=N*W, it will still TLE
+
+// The inner loop is to calculate the W window size of probability, and each time we just move forward one length, so we could use
+// one variable to store the sum of the W size and when it moves, plus the new one and minus the left one. And only the left of the
+// W window is >=0, we could minus it, only the right of the W window is <K, we could plus it. The W window means we need to get another
+// number and if the right is >=K, it means can not get another number.
+
+
+//TLE
+class Solution {
+public:
+    double dfs(int cur,int N, int K, int W)
+    {
+        if(cur>=K)
+        {
+            if(cur<=N) return 1;
+            else return 0;
+        }
+        double sum=0;
+        for(int i=1;i<=W;++i)
+        {
+            sum+=1.0/W*dfs(cur+i,N,K,W);
+        }
+        return sum;
+    }
+    double new21Game(int N, int K, int W) {
+        return dfs(0,N,K,W);
+    }
+};
+
+//TLE
+class Solution {
+public:
+    double new21Game(int N, int K, int W) {
+        vector<double> dp(N+1);
+        dp[0]=1;
+        for(int i=1;i<=N;++i)
+        {
+            double sum=0;
+            for(int j=i-W;j<i;++j)
+            {
+                if(j<0) continue;
+                if(j>=K) continue;
+                sum+=dp[j];
+            }
+            dp[i]=sum*1.0/W;
+        }
+        double rst=0;
+        for(int i=K;i<=N;++i)
+            rst+=dp[i];
+        return rst;
+    }
+};
+
+class Solution {
+public:
+    double new21Game(int N, int K, int W) {
+        vector<double> dp(N+1);
+        dp[0]=1;
+        double sum=0;
+        for(int i=1;i<=N;++i)
+        {
+            if(i-1<K)
+                sum+=dp[i-1]*1.0/W;
+            if(i-W-1>=0)
+                sum-=dp[i-W-1]*1.0/W;
+            dp[i]=sum;
+        }
+        double rst=0;
+        for(int i=K;i<=N;++i)
+            rst+=dp[i];
+        return rst;
+    }
+};
