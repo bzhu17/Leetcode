@@ -1,0 +1,47 @@
+// Description: Ugly numbers are positive numbers whose prime factors only include 2,3,5
+
+// It is easier to use a ordered data structure and each time get the smallest, insert it
+// multiply 2,3,5, O(n) is nlogn
+
+// We also could use three pointer to represent the index of which the last number which 
+// multiply 2,3,5, find the minimum one and index plus 1. And when like 2*3, 3*2 are the
+// same, we just need to add index which means multiply 2 and 3 both plus 1.
+
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        priority_queue<long,vector<long>,greater<long>> p;
+        p.push(1);
+        for(int i=1;i<n;++i)
+        {
+            long t=p.top();p.pop();
+            while(!p.empty()&&p.top()==t)
+            {
+                t=p.top();
+                p.pop();
+            }
+            p.push(t*2);
+            p.push(t*3);
+            p.push(t*5);
+        }
+        return p.top();
+    }
+};
+
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        int ind2=0,ind3=0,ind5=0;
+        vector<int> rst{1};
+        while(n)
+        {
+            --n;
+            int mn=min(min(rst[ind2]*2,rst[ind3]*3),rst[ind5]*5);
+            if(mn==rst[ind2]*2) ++ind2;
+            if(mn==rst[ind3]*3) ++ind3;
+            if(mn==rst[ind5]*5) ++ind5;
+            rst.push_back(mn);
+        }
+        return rst.back();
+    }
+};
