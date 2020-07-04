@@ -1,0 +1,44 @@
+// Description: given rectangles could perfect cover with a rectangle without overlop or gap.
+
+// First, the area of all rectangles should equal to the final perfect rectangle, and from the 
+// perfect rectangle given, except four vertexs, other vertexs will occur 2 or 4 times,if it is 
+// not perfect rectangle, the number of odd times vertexs are not 4.
+
+// I want to use unordered_map to store the pair of (x,y), but unordered_map could not set pair 
+// as key unless defining own hash(), and if we use set<pair<int,int>> to instead, O(n) is nlogn
+// and it will TLE. So we could use one hash function to translate (x,y) to a variable and use 
+// unordered_map. And at last, we need to consider whether four vertexs is in unordered_map.
+// It uses x*7+y*7*7*7 as hash function.
+
+class Solution {
+public:
+    int hash(int x,int y)
+    {
+        return x*7+y*7*7*7;
+    }
+    bool isRectangleCover(vector<vector<int>>& rectangles) {
+        unordered_set<int> sets;
+        int area=0,left=INT_MAX,right=INT_MIN,up=INT_MIN,down=INT_MAX;
+        for(auto &a:rectangles)
+        {
+            area+=(a[2]-a[0])*(a[3]-a[1]);
+            left=min(left,a[0]);
+            right=max(right,a[2]);
+            up=max(up,a[3]);
+            down=min(down,a[1]);
+            int num=hash(a[0],a[1]);
+            if(sets.count(num)) sets.erase(num);
+            else sets.insert(num);
+            num=hash(a[2],a[1]);
+            if(sets.count(num)) sets.erase(num);
+            else sets.insert(num);
+            num=hash(a[2],a[3]);
+            if(sets.count(num)) sets.erase(num);
+            else sets.insert(num);
+            num=hash(a[0],a[3]);
+            if(sets.count(num)) sets.erase(num);
+            else sets.insert(num);
+        }
+        return sets.size()==4&&area==(right-left)*(up-down)&&sets.count(hash(left,down))&&sets.count(hash(right,down))&&sets.count(hash(right,up))&&sets.count(hash(left,up));
+    }
+};
