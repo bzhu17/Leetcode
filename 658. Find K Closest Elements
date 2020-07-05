@@ -1,0 +1,26 @@
+// Description: Given a sorted array arr, two integers k and x, find the k closest elements to x in the array. 
+// The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred.
+
+// Because the rst must be a continuous subarray of the input, so we could use Binary Search to find the start 
+// index. It likes a window, the best solution is the symmetry about the x, so we could use a k+1 size window not 
+// k-size window, because k+1 size must have one number we need to drop, and we could find the farer one to avoid
+// corner case.
+
+class Solution {
+public:
+    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+        int low=0,hi=arr.size()-k;
+        while(low<hi)
+        {
+            int mid=low+(hi-low)/2;
+            if(x-arr[mid]>arr[mid+k]-x)
+                low=mid+1;
+            else
+                hi=mid;
+        }
+        vector<int> rst;
+        for(int i=low;i<low+k;++i)
+            rst.push_back(arr[i]);
+        return rst;
+    }
+};
