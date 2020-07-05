@@ -3,6 +3,26 @@ vector<vector<int>> v(m, vector<int>(n,0));
 //二维vector (m,n)先按照第一个数排序，如果相同再按照第二个数排序
 sort(v.begin(),v.end(),[](const vector<int>& a,const vector<int>& b){return a[0]<b[0]||a[0]==b[0]&&a[1]<b[1];});
 
+
+// [left,right), < left means condition 1 is true, >right means condition 2 is true
+int left=0,right=arr.size();
+while(left<right)
+{
+  int mid=left+(right-left)/2;
+  if(arr[mid]<x) left=mid+1;// condition 1
+  else right=mid; //condition 2
+}
+
+//[left,right],< left means condition 1 is true, >right means condition 2 is true
+int left=0,right=arr.size()-1;
+while(left<=right)
+{
+  int mid=left+(right-left)/2;
+  if(arr[mid]<x) left=mid+1;// condition 1
+  else right=mid-1; //condition 2
+}
+
+
 //第一类，查找和目标值完全相等的数
 int find(vector<int>& nums, int target)
 {
