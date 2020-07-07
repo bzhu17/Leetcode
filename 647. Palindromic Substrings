@@ -1,0 +1,26 @@
+// Description: a given string finding the total number of palindromic substring.
+
+// We can set each charactor as the mid and extand to left and right, if they are
+// same, rst plus 1 or check next charactor. And if palindromic is odd size, the 
+// charactor is mid, if it is even, the charactor and the next are both the mid.
+
+class Solution {
+public:
+    void helper(string s,int left,int right,int& rst)
+    {
+        while(left>=0&&right<s.size()&&s[left]==s[right])
+        {
+            --left;++right;++rst;
+        }
+    }
+    int countSubstrings(string s) {
+        if(s.empty()) return 0;
+        int n=s.size(),rst=0;
+        for(int i=0;i<n;++i)
+        {
+            helper(s,i,i,rst);
+            helper(s,i,i+1,rst);
+        }
+        return rst;
+    }
+};
