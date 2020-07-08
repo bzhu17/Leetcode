@@ -1,0 +1,16 @@
+// Description: a given array, each move could let n-1 numbers to plus 1, and the minimum move to make all numbers equal.
+
+// n-1 numbers plus 1 == 1 number minus 1, so just find every number minus the minimum number
+
+class Solution {
+public:
+    int minMoves(vector<int>& nums) {
+        long sum=0,mn=INT_MAX,n=nums.size();
+        for(long a:nums)
+        {
+            sum+=a;
+            mn=min(mn,a);
+        }
+        return sum-n*mn;
+    }
+};
