@@ -1,0 +1,40 @@
+// Description: knight could go as {{2,1},{1,2},{2,-1},{1,-2},{-2,1},{-1,2},{-2,-1},{-1,-2}}, and given a destination that must could go
+// find the minimum steps
+
+// It is easier to think use bfs to find the minimum steps, but without any optimization, it will TLE. We could push four quadrants in the
+// first quadrant - x=abs(x) and y=abs(y), and then only the first two steps will generate smaller than 0 x and y like (0,0 -> -2,-1 or 
+// 0,0 -> -1,-2), so we could judge whether x and y bigger than -2
+
+class Solution {
+public:
+    int minKnightMoves(int x, int y) {
+        if(x==0&&y==0) return 0;
+        queue<pair<int,int>> q;
+        x=abs(x);y=abs(y);
+        q.push({0,0});
+        vector<vector<int>> visited(303,vector<int>(303));
+        visited[2][2]=1;
+        vector<pair<int,int>> helper({{2,1},{1,2},{2,-1},{1,-2},{-2,1},{-1,2},{-2,-1},{-1,-2}});
+        int rst=1;
+        while(!q.empty())
+        {
+            for(int k=q.size();k>0;--k)
+            {
+                auto a=q.front();
+                q.pop();
+                for(auto &b:helper)
+                {
+                    int x_=a.first+b.first,y_=a.second+b.second;
+                    if(x_==x&&y_==y) return rst;
+                    if(x_>=-2&&y_>=-2&&!visited[x_+2][y_+2])
+                    {
+                        q.push({x_,y_});
+                        visited[x_+2][y_+2]=1;
+                    }
+                }
+            }
+            ++rst;
+        }
+        return rst;
+    }
+};
