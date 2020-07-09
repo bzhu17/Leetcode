@@ -1,0 +1,53 @@
+// Description: 2D vector, 1 means cherry could pick, 0 means could pass, -1 means could not pass, find the maximum cherries
+// that could pick when from 0,0 to N-1,N-1 and come back, no road means 0 to pick up
+
+// Use greedy would just get the partial maximum like
+// 11100
+// 00101
+// 10100
+// 00100
+// 00111
+// so with bfs in bfs will TLE.
+
+// We could use dp, but it likes we have to people moving at the same time, each moves one step, so we need four variables to
+// represents the position like i,j,x,y. But i+j==x+y, so we just need a 3D vector DP, dp[i][j][x] means the maximum cherries 
+// two people could pick. And it comes from max{dp[][][],dp[][][],dp[][][],dp[][][]}, because each person has two comes direction,
+// and if two people in different position, plus whether they pick cherries, if the position is the same, just plus one. We need
+// to initial as INT_MIN, because there may no roads, if we set 0, we can not know whether there has road, but with INT_MIN, though
+// INT_MIN plus some intergers, it still smaller than 0. 
+
+// 3D array will faster than 3D vector, maybe because array is on stack and vector is on heap.
+
+class Solution {
+public:
+int cherryPickup(vector<vector<int>>& grid) {
+    int N = grid.size();
+    int dp[N+1][N+1][N+1];
+    for(int i=0;i<=N;++i)
+        for(int j=0;j<=N;++j)
+            for(int k=0;k<=N;++k)
+                dp[i][j][k]=INT_MIN;
+    for (int i = 1; i <= N; ++i)
+        for (int j = 1; j <= N; ++j)
+            for (int x = 1; x <= N; ++x)
+            {
+                if (i == 1 && j == 1 && x == 1)
+                {
+                    dp[1][1][1] = grid[0][0];
+                    continue;
+                }
+                int y = i + j - x;
+                if (y<1 || y>N) continue;
+                if (grid[i - 1][j - 1] == -1 || grid[x - 1][y - 1] == -1) continue;
+                dp[i][j][x] = max(dp[i][j][x], dp[i][j - 1][x]);
+                dp[i][j][x] = max(dp[i][j][x], dp[i - 1][j][x]);
+                dp[i][j][x] = max(dp[i][j][x], dp[i][j - 1][x - 1]);
+                dp[i][j][x] = max(dp[i][j][x], dp[i - 1][j][x - 1]);
+                if (i == x)
+                    dp[i][j][x] += grid[i - 1][j - 1];
+                else
+                    dp[i][j][x] += grid[i - 1][j - 1] + grid[x - 1][y - 1];
+            }
+    return max(0, dp[N][N][N]);
+  }
+};
