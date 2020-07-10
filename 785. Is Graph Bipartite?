@@ -1,6 +1,6 @@
 // Description: 2D vector means the ith node has the line with the node like [[1,2],[0,2]] means
 // 0th node links 1 and 2, 1th node links 0 and 2. Graph Bipartite means two nodes of one line could
-// be divided to different group and there are total 2 groups.
+// be divided to different group and there are total 2 groups. 
 
 // At first I think I could use dfs to run all loops, with one while and a visited and when not all
 // nodes are visited I still need loop becuase there are maybe many cycles. But we can use just one
