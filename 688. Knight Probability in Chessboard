@@ -1,0 +1,50 @@
+// Description: given x,y and K steps, calculate the Knight 
+// in Chessboard the probability that the knight remains on 
+// the board after it has stopped 
+
+// At first I think we could use bfs, and in the first level 
+// multiple 1/8, the second level multiple 1/8*1/8, but it 
+// will TLE, int the first level it will calculate 8 points, 
+// and next 8^2, next 8^3.... Because there will always has
+// repeated points and we could use visited vector because 
+// it also contirbutions to the probability.
+
+// This is one of the status translation, from point(x,y), we
+// have 8 status we could move, so we could use DP. But how to
+// renew the DP? When we at one point, we could loop all DP to 
+// refresh all points, it just like the bfs, one loop is the 
+// level, and in each level, we refresh all points in the 
+// Chessboard, because we do not need to consider the repeated,
+// so On will reduce. The formal DP which is DP[i]=DP[i-1], but
+// at this problem, the status translate just like in one level,
+// when we get the kth steps, we refresh all points.
+
+class Solution {
+public:
+    double knightProbability(int N, int K, int r, int c) {
+        vector<vector<int>> helper{{2,1},{1,2},{2,-1},{1,-2},{-2,1},{-1,2},{-2,-1},{-1,-2}};
+        vector<vector<double>> dp(N,vector<double>(N,0));
+        dp[r][c]=1;
+        for(int i=0;i<K;++i)
+        {
+            vector<vector<double>> dp2(N,vector<double>(N,0));
+            for(int i=0;i<N;++i)
+                for(int j=0;j<N;++j)
+                    for(auto &a:helper)
+                    {
+                        int x=i+a[0];
+                        int y=j+a[1];
+                        if(x<0||x>=N||y<0||y>=N) continue;
+                        dp2[i][j]+=dp[x][y]*1.0/8;
+                    }
+            dp=dp2;
+        }
+        double rst=0;
+        for(int i=0;i<N;++i)
+            for(int j=0;j<N;++j)
+            {
+                rst+=dp[i][j];
+            }
+        return rst;
+    }
+};
