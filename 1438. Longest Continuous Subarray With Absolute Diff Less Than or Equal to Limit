@@ -1,0 +1,53 @@
+// Description: find the maximum length of one subarray that the biggest minus smallest <= limit.
+
+// It is easier to think about using slidng windows+map, using map to find the biggest and the smallest number, but how windows sliding?
+// We can loop the right side from 0 to n and then moving left to right to find the first fits situation. Because whether ++right is the
+// biggest, smallest or between the range, previous before the left does not fit so ++right will also not fit.
+
+// Using map O(n) is nlogn, we could use two deque, one is max and the other is min to find the biggest and the smallest, which O(n) is n.
+// Max deque is diminishing, if the front is equals to sum[i],just pop it and the min deque is the same.
+
+class Solution {
+public:
+   int longestSubarray(vector<int>& nums, int limit) {
+       map<int,int> ma;
+       int l=0,rst=0,n=nums.size();
+       for(int r=0;r<n;++r)
+       {
+           ++ma[nums[r]];
+           while(ma.rbegin()->first-ma.begin()->first>limit) 
+           {
+               if(--ma[nums[l]]==0)
+               {
+                   ma.erase(nums[l]);
+               }
+               ++l;
+           }
+           rst=max(rst,r-l+1);
+       }
+       return rst;
+    }
+};
+
+class Solution {
+public:
+   int longestSubarray(vector<int>& nums, int limit) {
+       deque<int> mx,mn;
+       int l=0,rst=0,n=nums.size();
+       for(int r=0;r<n;++r)
+       {
+           while(!mx.empty()&&nums[r]>mx.back()) mx.pop_back();
+           while(!mn.empty()&&nums[r]<mn.back()) mn.pop_back();
+           mx.push_back(nums[r]);
+           mn.push_back(nums[r]);
+           while(mx.front()-mn.front()>limit) 
+           {
+               if(mx.front()==nums[l]) mx.pop_front();
+               if(mn.front()==nums[l]) mn.pop_front();
+               ++l;
+           }
+           rst=max(rst,r-l+1);
+       }
+       return rst;
+    }
+};
