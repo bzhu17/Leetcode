@@ -1,0 +1,54 @@
+// Description: Given an array of integers, number [1,n] 
+// some elements appear twice and others appear once.
+// Find all the elements that appear twice in this array.
+
+// It is no relations with Bit, if no repeated numbers,
+// given array is [1,2,...,n], so each number has its own
+// position, so the position and the number is the importance.
+
+// We could loop the array, each number make a point on its
+// position, like make the number on this position become
+// negative, so if next time we find a negative position,
+// number is repeated.
+
+// We could also swap the number to its own position, and
+// then loop again, if the number does not fit the position,
+// it is repeated.
+
+class Solution {
+public:
+    vector<int> findDuplicates(vector<int>& nums) {
+        vector<int> rst;
+        for(int i=0;i<nums.size();++i)
+        {
+            if(nums[abs(nums[i])-1]<0) 
+            {
+                rst.push_back(abs(nums[i]));
+                continue;
+            }
+            nums[abs(nums[i])-1]=-nums[abs(nums[i])-1];
+        } 
+        return rst;
+    }
+};
+
+class Solution {
+public:
+    vector<int> findDuplicates(vector<int>& nums) {
+        for(int i=0;i<nums.size();++i)
+        {
+            if(nums[i]!=nums[nums[i]-1])
+            {
+                swap(nums[i],nums[nums[i]-1]);
+                --i;
+            }
+        }
+        vector<int> rst;
+        for(int i=0;i<nums.size();++i)
+        {
+            if(i!=nums[i]-1)
+                rst.push_back(nums[i]);
+        }
+        return rst;
+    }
+};
