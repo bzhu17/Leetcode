@@ -1,0 +1,9 @@
+// In C++, we could use vector to maintain inserting number, 
+// and the vector is ordered. We could use upper_bound to find
+// the position the added number should be. We could also use
+// insert but need to judge the boundary.
+
+auto it=upper_bound(helper.begin(),prev(helper.end(),1),nums[i]);
+rotate(it,prev(helper.end(),1),helper.end());
+rst.push_back((helper[(k-1)/2]+helper[k/2])/2.0);
+helper.erase(find(helper.begin(),helper.end(),nums[i-k+1]));
