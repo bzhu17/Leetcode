@@ -1,0 +1,19 @@
+// Description: Given a 32-bit signed integer, reverse digits of an integer.
+
+// The difficulty is the reverse will overflow, and we could manage each bit
+// each time, first compared to INT_MAX/10, and then multiply 10 and plus
+// x%10
+
+class Solution {
+public:
+    int reverse(int x) {
+        int rst=0;
+        while(x!=0)
+        {
+            if(abs(rst)>INT_MAX/10) return 0;
+            rst=rst*10+x%10;
+            x/=10;
+        }
+        return rst;
+    }
+};
