@@ -1,0 +1,50 @@
+// Description: Return all critical connections in the network in any order.
+// Critical connections mean without this line it could not connect.
+
+// We need to use Tarjan's algorithm to find the depth of the node,
+// and if the node is a cycle, all nodes will refresh to the minimum
+// depth in the cicycle. We need to use dfs+depth.
+// With a vector id to store depth of the node, when we at a node,
+// we need to consider the neighboors of it, if the neighboor has not
+// visited, just dfs go deeply with level+1, or if the neighboor has
+// visited, it means we get a node which is ealier than current, and 
+// we need to find the minimum depth of all neigboors, and with the 
+// backtracing to refresh all nodes in the cycle. And when we have the
+// depth how we judge whether its critical? The critical could not on
+// the cycle, it is clearly, so we just need to judge whether level 
+// equals to id[current], if it is true it means the node is not on
+// the cycle, it is critical.
+
+class Solution {
+public:
+    int dfs(vector<vector<int>>& vec,vector<int>& id,int parent,int i,int num,vector<vector<int>>& rst)
+    {
+        id[i]=num;
+        for(auto &a:vec[i])
+        {
+            if(a==parent) continue;
+            else if(id[a]==-1)
+            {
+                id[i]=min(id[i],dfs(vec,id,i,a,num+1,rst));
+            }
+            else
+            {
+                id[i]=min(id[i],id[a]);
+            }
+        }
+        if(id[i]==num&&i!=0)
+            rst.push_back({i,parent});
+        return id[i];
+    }
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        vector<vector<int>> vec(n),rst;
+        vector<int> id(n,-1);
+        for(auto &a:connections)
+        {
+            vec[a[0]].push_back(a[1]);
+            vec[a[1]].push_back(a[0]);
+        }
+        dfs(vec,id,-1,0,0,rst);
+        return rst;
+    }
+};

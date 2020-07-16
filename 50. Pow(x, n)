@@ -1,0 +1,21 @@
+// Description: complete pow(x,n) which is x^n
+
+// It is easier to think use loop from 1 to n, but
+// there is a better way, we could calculate n/2
+// each time, because n/2 will be 0 finally, and
+// then we traceback, and if n is even, we could 
+// just return half*half, or n is odd, return 
+// half*half*x. But n maybe <0, if n is even, it 
+// is ok, but if n is odd, we need to return 
+// half*half/x.
+
+class Solution {
+public:
+    double myPow(double x, int n) {
+        if(n==0) return 1;
+        double half=myPow(x,n/2);
+        if(n%2==0) return half*half;
+        if(n>0) return half*half*x;
+        else return half*half/x;
+    }
+};
