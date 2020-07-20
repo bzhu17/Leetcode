@@ -1,0 +1,39 @@
+ Union find usually use a root vector to represents the root of
+ the point, and there are two functions, one is find - finding 
+ the root of the node, the other is union - union the same root
+ node.
+ As the find function, if we just to use recursive to find the 
+ root, On maybe too high, so we want to make all same points link
+ to the root point, like 1->2->3->4, chaning to 1->2,1->3,1->4.
+ We just need to return the root point number and make all children
+ to this number.
+ As the union function, we want to merge the less complexity node 
+ as the children of the more complexity node, so we use a vector 
+ named ranks to represents the complexity.
+
+ class UnionFindSet{
+ public:
+ 	UnionFindSet(n){
+ 		ranks.resize(n);
+ 		for(int i=0;i<n;++i) root.push_back(i);
+ 	}
+ 	int Find(int i)
+ 	{
+ 		if(root[i]!=i)
+ 			root[i]=Find(root[i]);
+ 		return root[i];
+ 	}
+ 	void Union(int x,int y)
+ 	{
+ 		int rootx=Find(x),rooty=Find(y);
+ 		if(ranks[rootx]>ranks[rooty]) root[rooty]=rootx;
+ 		else if(ranks[rootx]<ranks[rooty]) root[rootx]=rooty;
+ 		else
+ 		{
+ 			root[rooty]=rootx;
+ 			++ranks[rootx];
+ 		}
+ 	}
+ private:
+ 	vector<int> root,ranks;
+ };

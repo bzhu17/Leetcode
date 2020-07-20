@@ -1,0 +1,29 @@
+// Description: a given array to find the maximum possible 
+// sum of elements such that it is divisible by three.
+
+// It is easy to think about using %, at first I think sort
+// the array, and then calculate the sum and store %=1 and 
+// %=2, and if sum%3==1, sum-min(%1,%2+%2) and if sum%3==2
+// sum-min(%1+%1,%2).
+
+// We could also use DP, DP[0] means the sum of biggest number
+// %3==0, dp(3), and we loop the array, use nums[i] to plus 
+// dp[0],dp[1],dp[2] and to refresh the dp, so we get the
+// maximum sum of %1,%2,%3, it could make sure each time nums[i]
+// plus the maximum sum.
+
+class Solution {
+public:
+    int maxSumDivThree(vector<int>& nums) {
+        vector<int> dp(3),dp1(3);
+        for(auto &a:nums)
+        {
+            dp1=dp;
+            for(auto &b:dp1)
+            {
+                dp[(a+b)%3]=max(dp[(a+b)%3],a+b);
+            }
+        }
+        return dp[0];
+    }
+}; 

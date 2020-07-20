@@ -1,0 +1,47 @@
+ // Description: Some people will make friend requests. 
+ // The list of their ages is given and ages[i] is the 
+ // age of the ith person. 
+ // Person A will NOT friend request person B (B != A) 
+ // if any of the following conditions are true:
+ // age[B] > age[A]
+ // age[B] > 100 && age[A] < 100
+ // Otherwise, A will friend request B.
+ // Note that if A requests B, B does not necessarily 
+ // request A.  Also, people will not friend request themselves.
+ // How many total friend requests are made?
+
+ // It is easier to use nlogn with upper_bound.
+ // And how to deal with n?
+ // We could use sum array. Because the arrange of data
+ // is [1,120], so we could have two vector one is num
+ // represents whether the i has the person, and sum means
+ // from 1 to i has total person both 121 size.
+ // After dealing with this two vectors, we could loop 
+ // [15,120](A>0.5A+7, so A must >14),and if num[i]!=0,
+ // we need to consider how many person in (0.5*i+7,i],
+ // which could calculate as sum[i]-sum[0.5*i+7]-1, minus
+ // 1 is because we can not make friend myself, and if 
+ // sum-sum==1, it means actually there is no friend, it
+ // is ourself, and then multiple nums[i].
+ // We also could loop the given vector, but the arrange 
+ // of given size is 20000, so maybe loop [15,200] is better.
+
+ class Solution {
+public:
+    int numFriendRequests(vector<int>& ages) {
+        vector<int> sum(121),num(121);
+        int rst=0;
+        for(int &age:ages) ++num[age];
+        for(int i=1;i<121;++i)
+        {
+            sum[i]=sum[i-1]+num[i];
+        }
+        for(int i=15;i<121;++i)
+        {
+            if(num[i]==0) continue;
+            int cnt=sum[i]-sum[i*0.5+7]-1;
+            rst+=cnt*num[i];
+        }
+        return rst;
+    }
+};

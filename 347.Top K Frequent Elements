@@ -1,0 +1,33 @@
+// Description: Given a non-empty array of integers, return 
+// the k most frequent elements. O(n) is better than nlogn.
+
+// If we first calculate each number appear times in array,
+// and then using priority_queue to sort, O(n) is nlog(k),
+// if k equals to n, it is not good.
+
+// We could use bucket sorting, because array size is n, so
+// the appear times is [0,n], we just need to calculate the
+// appear times of each element, and loop the vector from 
+// right to left.
+
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        int mx=0;
+        unordered_map<int,int> ma;
+        for(int &num:nums) 
+        {
+            mx=max(mx,++ma[num]);
+        }
+        unordered_map<int,vector<int>> ma1;
+        for(auto &a:ma) ma1[a.second].push_back(a.first);
+        vector<int> rst;
+        for(int i=mx;i>=0;--i)
+        {
+            if(!ma1.count(i)) continue;
+            for(auto &a:ma1[i]) rst.push_back(a);
+            if(rst.size()==k) break;
+        }
+        return rst;
+    }
+};

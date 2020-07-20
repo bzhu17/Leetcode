@@ -1,0 +1,47 @@
+ // Description: Given a string s and a list of strings dict, 
+ // you need to add a closed pair of bold tag <b> and </b> to 
+ // wrap the substrings in s that exist in dict.
+ // "aaabbcc",["aaa","aab","bc"] -> "<b>aaabbc</b>c"
+
+ // The difficulty is the list string overlap, because dict 
+ // less than 100 and string length less than 1000. So we
+ // could use brute force, we could use a string length vector
+ // to store whether tha charactor in this index should be
+ // bold. We loop the string, and at each index, search whether
+ // it has the string in dict, use a variable end to represents
+ // the final index.
+
+ class Solution {
+public:
+    string addBoldTag(string s, vector<string>& dict) {
+        int n=s.size(),end=0;
+        vector<int> bold(n);
+        for(int i=0;i<n;++i)
+        {
+            for(string &st:dict)
+            {
+                int length=st.size();
+                if(i+length<=n&&s.substr(i,length)==st)
+                {
+                    end=max(end,i+length);
+                }
+            }
+            bold[i]=end>i;
+        }
+        string rst;
+        for(int i=0;i<n;++i)
+        {
+            if(bold[i]==1)
+            {
+                if(i==0||bold[i-1]==0) rst+="<b>";
+            }
+            else
+            {
+                if(i>0&&bold[i-1]==1) rst+="</b>";
+            }
+            rst+=s[i];
+        }
+        if(bold.back()==1) rst+="</b>";
+        return rst;
+    }
+};

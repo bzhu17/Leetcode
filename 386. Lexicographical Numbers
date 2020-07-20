@@ -1,0 +1,32 @@
+ // Description: Given an integer n, return 1 - n in lexicographical order.
+ // [1,10,100,101,102,..,11,110,111,...,2,20,200,...]
+
+ // We could loop from 0 to n, the cur starts from 1, and if cur*10 <=n,
+ // cur*=10, else it means we get the longest length, and we need to plus 1
+ // and when we get the number %10==0, it means we need to remove it.
+ // 1100->110->11,just like that, if the range cover 1000-2000, we will
+ // insert all 1 digit, 2digits in it, but if the range is 1000-1500, we
+ // insert 110,120,130,140,150 and we need to continue insert 160,170,...
+ // so when cur >=n, we need to cur/=10, and continue.
+
+ class Solution {
+public:
+    vector<int> lexicalOrder(int n) {
+        if(n<1) return {};
+        vector<int> rst;
+        int cur=1;
+        for(int i=0;i<n;++i)
+        {
+            rst.push_back(cur);
+            if(cur*10<=n)
+                cur*=10;
+            else
+            {
+                if(cur>=n) cur/=10;
+                ++cur;
+                while(cur%10==0) cur/=10;
+            }
+        }
+        return rst;
+    }
+};
