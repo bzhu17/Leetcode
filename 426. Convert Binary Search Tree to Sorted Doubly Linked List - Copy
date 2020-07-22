@@ -1,0 +1,62 @@
+ // Description: Convert a Binary Search Tree to a sorted 
+ // Circular Doubly-Linked List in place. Node right is the 
+ // next and left is the previous, head left is the last.
+
+ // Because it is BST so in-order will get a sorted, we could
+ // store the previous node, so the next point could get the 
+ // previous node. And we need to use Node* &pre, it means pre
+ // is Node* and it is an alias. And after in-order, pre will 
+ // be the last point.
+
+ /*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+        left = NULL;
+        right = NULL;
+    }
+
+    Node(int _val, Node* _left, Node* _right) {
+        val = _val;
+        left = _left;
+        right = _right;
+    }
+};
+*/
+
+class Solution {
+public:
+    void inorder(Node* node,Node*&head,Node*&pre)
+    {
+        if(!node) return;
+        inorder(node->left,head,pre);
+        if(!head)
+        {
+            head=node;
+            pre=node;
+        }
+        else
+        {
+            pre->right=node;
+            node->left=pre;
+            pre=node;
+        }
+        inorder(node->right,head,pre);
+    }
+    Node* treeToDoublyList(Node* root) {
+        if(!root) return nullptr;
+        Node*head=nullptr,*pre=nullptr;
+        inorder(root,head,pre);
+        pre->right=head;
+        head->left=pre;
+        return head;
+    }
+};
